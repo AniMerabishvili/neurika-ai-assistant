@@ -113,106 +113,7 @@ serve(async (req) => {
     // Fallback to hardcoded Q&A pairs for brain tumor dataset (legacy)
     const isBrainTumorDataset = fileContext.includes('brain_tumor') || fileContext.includes('Tumor_Grade') || fileContext.includes('Glioblastoma');
     
-    // Q1: Glioblastoma survival factors analysis
-    if (isBrainTumorDataset && (
-      questionLower.includes('glioblastoma') || 
-      (questionLower.includes('survival') && questionLower.includes('factor'))
-    )) {
-      console.log('Matched Q1: Glioblastoma survival analysis');
-      
-      const completeAnalysis = `**1. Analysis Plan**
-
-I'll analyze your brain tumor dataset to identify the key factors influencing patient survival. I'll start by loading the data, checking its quality, and then performing a comprehensive analysis focusing on tumor grade, biomarkers, and treatment types. I'll include a correlation matrix and statistical tests to determine significance.
-
----
-
-**2. Data Loading & Quality Check**
-
-✅ Data loaded successfully. I'm working with 300 patient records and 12 clinical variables. The data quality is good with no missing values in the key columns we'll be analyzing.
-
-**Dataset Preview:**
-
-| Patient_ID | Age | Gender | Tumor_Size_cm³ | Tumor_Location | Tumor_Grade | Survival_Status |
-|------------|-----|--------|----------------|----------------|-------------|-----------------|
-| 1 | 62 | M | 4.2 | Frontal | III | Alive |
-| 2 | 45 | F | 6.8 | Temporal | IV | Deceased |
-| 3 | 58 | M | 3.1 | Parietal | II | Alive |
-
----
-
-**3. Initial Overview & Descriptive Statistics**
-
-First, let's understand our patient population. The distribution shows a significant number of patients with high-grade tumors (Grade III & IV), which aligns with the serious nature of glioblastoma.
-
-*Visual: Bar chart – Patient Distribution by Tumor Grade*
-
----
-
-**4. Correlation Analysis**
-
-Now, examining the correlation matrix for numerical features. We can see strong positive correlations between Tumor_Grade and Tumor_Size, and strong negative correlations between both these factors and KPS_Score. This suggests that as tumors become more advanced and larger, patients' functional performance declines significantly.
-
-**Key Correlation Insights:**
-
-| Relation | Value | Type |
-|----------|-------|------|
-| Tumor_Grade ↔ Tumor_Size | +0.82 | Strong Positive |
-| Tumor_Grade ↔ KPS_Score | -0.76 | Strong Negative |
-| Biomarker_1 ↔ Survival_Time | -0.68 | Moderate Negative |
-
----
-
-**5. Statistical Testing & Group Comparisons**
-
-To directly test survival relationships, I'm comparing tumor characteristics between survivors and non-survivors. The Mann-Whitney U test confirms that Tumor_Grade is significantly higher in deceased patients (p < 0.001). Looking at treatment efficacy, patients receiving Surgery+Radio show the highest survival rate at 78%, compared to 22% for Chemo alone. A Chi-squared test confirms this difference is statistically significant (p < 0.001).
-
-*Visuals:*
-- Box plot – Tumor Grade Distribution by Survival Status
-- Bar chart – Survival Rates by Treatment Type
-
----
-
-**6. Biomarker Analysis**
-
-Your genomic biomarkers show interesting patterns. Biomarker_1 has a strong negative correlation with survival time (-0.68), suggesting it may be a risk factor. Conversely, Biomarker_2 shows a positive correlation (+0.54), potentially indicating a protective effect.
-
-*Visual: Scatter plot – Biomarker 1 Expression vs Survival Time*
-
----
-
-**Final Insight Summary**
-
-**1. Primary Driver: Tumor Grade**
-
-This is the single strongest predictor. Grade IV patients have 8.3x higher mortality risk than Grade I/II patients.
-
-**2. Critical Co-Factor: Treatment Type**
-
-Combination therapy (Surgery + Radio) shows the best outcomes, significantly outperforming single-modality treatments.
-
-**3. Important Prognostic Indicator: KPS Performance Score**
-
-Patients with scores below 60 have dramatically worse outcomes, regardless of other factors.
-
-**4. Promising Biomarkers**
-
-- Biomarker 1: High expression correlates with poor prognosis (potential therapeutic target)
-- Biomarker 2: High expression correlates with better outcomes (potential protective factor)`;
-
-      // Return complete analysis in observation field for single card display
-      const result = {
-        content: "Complete brain tumor survival analysis",
-        observation: completeAnalysis,
-        interpretation: '',
-        actionable_conclusion: ''
-      };
-      
-      return new Response(JSON.stringify(result), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-    
-    // Q2: Correlation and statistical analysis
+    // Q2: Correlation and statistical analysis (check this FIRST - more specific)
     if (isBrainTumorDataset && (
       questionLower.includes('correlation') || 
       questionLower.includes('statistical') ||
@@ -350,6 +251,105 @@ The dataset loads fine and has a reasonable mix of clinical, genomic, and surviv
         content: "Complete statistical analysis of brain tumor dataset",
         observation: '',
         interpretation: completeAnalysis,
+        actionable_conclusion: ''
+      };
+      
+      return new Response(JSON.stringify(result), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    
+    // Q1: Glioblastoma survival factors analysis (check this SECOND)
+    if (isBrainTumorDataset && (
+      questionLower.includes('glioblastoma') || 
+      (questionLower.includes('survival') && questionLower.includes('factor'))
+    )) {
+      console.log('Matched Q1: Glioblastoma survival analysis');
+      
+      const completeAnalysis = `**1. Analysis Plan**
+
+I'll analyze your brain tumor dataset to identify the key factors influencing patient survival. I'll start by loading the data, checking its quality, and then performing a comprehensive analysis focusing on tumor grade, biomarkers, and treatment types. I'll include a correlation matrix and statistical tests to determine significance.
+
+---
+
+**2. Data Loading & Quality Check**
+
+✅ Data loaded successfully. I'm working with 300 patient records and 12 clinical variables. The data quality is good with no missing values in the key columns we'll be analyzing.
+
+**Dataset Preview:**
+
+| Patient_ID | Age | Gender | Tumor_Size_cm³ | Tumor_Location | Tumor_Grade | Survival_Status |
+|------------|-----|--------|----------------|----------------|-------------|-----------------|
+| 1 | 62 | M | 4.2 | Frontal | III | Alive |
+| 2 | 45 | F | 6.8 | Temporal | IV | Deceased |
+| 3 | 58 | M | 3.1 | Parietal | II | Alive |
+
+---
+
+**3. Initial Overview & Descriptive Statistics**
+
+First, let's understand our patient population. The distribution shows a significant number of patients with high-grade tumors (Grade III & IV), which aligns with the serious nature of glioblastoma.
+
+*Visual: Bar chart – Patient Distribution by Tumor Grade*
+
+---
+
+**4. Correlation Analysis**
+
+Now, examining the correlation matrix for numerical features. We can see strong positive correlations between Tumor_Grade and Tumor_Size, and strong negative correlations between both these factors and KPS_Score. This suggests that as tumors become more advanced and larger, patients' functional performance declines significantly.
+
+**Key Correlation Insights:**
+
+| Relation | Value | Type |
+|----------|-------|------|
+| Tumor_Grade ↔ Tumor_Size | +0.82 | Strong Positive |
+| Tumor_Grade ↔ KPS_Score | -0.76 | Strong Negative |
+| Biomarker_1 ↔ Survival_Time | -0.68 | Moderate Negative |
+
+---
+
+**5. Statistical Testing & Group Comparisons**
+
+To directly test survival relationships, I'm comparing tumor characteristics between survivors and non-survivors. The Mann-Whitney U test confirms that Tumor_Grade is significantly higher in deceased patients (p < 0.001). Looking at treatment efficacy, patients receiving Surgery+Radio show the highest survival rate at 78%, compared to 22% for Chemo alone. A Chi-squared test confirms this difference is statistically significant (p < 0.001).
+
+*Visuals:*
+- Box plot – Tumor Grade Distribution by Survival Status
+- Bar chart – Survival Rates by Treatment Type
+
+---
+
+**6. Biomarker Analysis**
+
+Your genomic biomarkers show interesting patterns. Biomarker_1 has a strong negative correlation with survival time (-0.68), suggesting it may be a risk factor. Conversely, Biomarker_2 shows a positive correlation (+0.54), potentially indicating a protective effect.
+
+*Visual: Scatter plot – Biomarker 1 Expression vs Survival Time*
+
+---
+
+**Final Insight Summary**
+
+**1. Primary Driver: Tumor Grade**
+
+This is the single strongest predictor. Grade IV patients have 8.3x higher mortality risk than Grade I/II patients.
+
+**2. Critical Co-Factor: Treatment Type**
+
+Combination therapy (Surgery + Radio) shows the best outcomes, significantly outperforming single-modality treatments.
+
+**3. Important Prognostic Indicator: KPS Performance Score**
+
+Patients with scores below 60 have dramatically worse outcomes, regardless of other factors.
+
+**4. Promising Biomarkers**
+
+- Biomarker 1: High expression correlates with poor prognosis (potential therapeutic target)
+- Biomarker 2: High expression correlates with better outcomes (potential protective factor)`;
+
+      // Return complete analysis in observation field for single card display
+      const result = {
+        content: "Complete brain tumor survival analysis",
+        observation: completeAnalysis,
+        interpretation: '',
         actionable_conclusion: ''
       };
       
