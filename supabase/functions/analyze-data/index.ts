@@ -69,58 +69,70 @@ serve(async (req) => {
     )) {
       console.log('Matched Q1: Glioblastoma survival analysis');
       
-      const observationContent = `**Data Loading & Quality Check**
+      const observationContent = `I'll analyze your brain tumor dataset to identify the key factors influencing patient survival. I'll start by loading the data, checking its quality, and then performing a comprehensive analysis focusing on tumor grade, biomarkers, and treatment types. I'll include a correlation matrix and statistical tests to determine significance.
 
-✅ Data loaded successfully. I'm working with 300 patient records and 12 clinical variables. The data quality is good with no missing values in the key columns we'll be analyzing.
+Of course. I'll analyze your brain tumor dataset to identify the key factors influencing patient survival. I'll start by loading the data, checking its quality, and then performing a comprehensive analysis focusing on tumor grade, biomarkers, and treatment types. I'll include a correlation matrix and statistical tests to determine significance."
 
-**Dataset Preview:**
-| Patient_ID | Age | Gender | Tumor_Size_cm³ | Tumor_Location | Tumor_Grade | ... | Survival_Status |
-|------------|-----|--------|----------------|----------------|-------------|-----|-----------------|
-| 1          | 62  | M      | 4.2            | Frontal        | III         | ... | Alive           |
-| 2          | 45  | F      | 6.8            | Temporal       | IV          | ... | Deceased        |
-| 3          | 58  | M      | 3.1            | Parietal       | II          | ... | Alive           |
+2. Data Loading & Quality Check
+(Screen transitions to show a clean, preview of the dataset)
 
-**Initial Overview & Descriptive Statistics**
+AI: "✅ Data loaded successfully. I'm working with 300 patient records and 12 clinical variables. The data quality is good with no missing values in the key columns we'll be analyzing."
 
-First, let's understand our patient population. The distribution shows a significant number of patients with high-grade tumors (Grade III & IV), which aligns with the serious nature of glioblastoma.
+Dataset Preview:
+Patient_ID	Age	Gender	Tumor_Size_cm³	Tumor_Location	Tumor_Grade	...	Survival_Status
+1	62	M	4.2	Frontal	III	...	Alive
+2	45	F	6.8	Temporal	IV	...	Deceased
+3	58	M	3.1	Parietal	II	...	Alive
 
-**Correlation Analysis**
+3. Initial Overview & Descriptive Statistics
+(Screen shows a bar chart: "Patient Distribution by Tumor Grade")
 
-Now, examining the correlation matrix for numerical features. We can see strong positive correlations between Tumor_Grade and Tumor_Size, and strong negative correlations between both these factors and KPS_Score. This suggests that as tumors become more advanced and larger, patients' functional performance declines significantly.
+AI: "First, let's understand our patient population. The distribution shows a significant number of patients with high-grade tumors (Grade III & IV), which aligns with the serious nature of glioblastoma."
 
-**Key Correlation Insights:**
-- Tumor_Grade ↔ Tumor_Size: +0.82 (Strong Positive)
-- Tumor_Grade ↔ KPS_Score: -0.76 (Strong Negative)
-- Biomarker_1 ↔ Survival_Time: -0.68 (Moderate Negative)`;
+4. Correlation Analysis
+(Screen displays a colorful correlation heatmap)
 
-      const interpretationContent = `**Statistical Testing & Group Comparisons**
+AI: "Now, examining the correlation matrix for numerical features. We can see strong positive correlations between Tumor_Grade and Tumor_Size, and strong negative correlations between both these factors and KPS_Score. This suggests that as tumors become more advanced and larger, patients' functional performance declines significantly."
 
-To directly test survival relationships, I'm comparing tumor characteristics between survivors and non-survivors. The Mann-Whitney U test confirms that Tumor_Grade is significantly higher in deceased patients (p < 0.001).
+Key Correlation Insights:
 
-**Treatment Efficacy Analysis**
+Tumor_Grade ↔ Tumor_Size: +0.82 (Strong Positive)
 
-Looking at treatment efficacy, patients receiving Surgery+Radio show the highest survival rate at 78%, compared to 22% for Chemo alone. A Chi-squared test confirms this difference is statistically significant (p < 0.001).
+Tumor_Grade ↔ KPS_Score: -0.76 (Strong Negative)
 
-**Biomarker Analysis**
+Biomarker_1 ↔ Survival_Time: -0.68 (Moderate Negative)`;
 
-Your genomic biomarkers show interesting patterns. Biomarker_1 has a strong negative correlation with survival time (-0.68), suggesting it may be a risk factor. Conversely, Biomarker_2 shows a positive correlation (+0.54), potentially indicating a protective effect.`;
+      const interpretationContent = `5. Statistical Testing & Group Comparisons
+(Screen shows a box plot: "Tumor Grade Distribution by Survival Status")
 
-      const actionableContent = `**FINAL INSIGHT SUMMARY**
+AI: "To directly test survival relationships, I'm comparing tumor characteristics between survivors and non-survivors. The Mann-Whitney U test confirms that Tumor_Grade is significantly higher in deceased patients (p < 0.001)."
 
-Based on my analysis, here are the key factors most strongly associated with patient survival in your dataset:
+(Screen shows another visualization: "Survival Rates by Treatment Type" - a bar chart)
 
-🎯 **1. PRIMARY DRIVER: Tumor Grade**
-This is the single strongest predictor. Grade IV patients have 8.3x higher mortality risk than Grade I/II patients.
+AI: "Looking at treatment efficacy, patients receiving Surgery+Radio show the highest survival rate at 78%, compared to 22% for Chemo alone. A Chi-squared test confirms this difference is statistically significant (p < 0.001)."
 
-🎯 **2. CRITICAL CO-FACTOR: Treatment Type**
+6. Biomarker Analysis
+(Screen shows a scatter plot: "Biomarker 1 Expression vs Survival Time")
+
+AI: "Your genomic biomarkers show interesting patterns. Biomarker_1 has a strong negative correlation with survival time (-0.68), suggesting it may be a risk factor. Conversely, Biomarker_2 shows a positive correlation (+0.54), potentially indicating a protective effect.`;
+
+      const actionableContent = `FINAL INSIGHT SUMMARY
+
+AI: "Based on my analysis, here are the key factors most strongly associated with patient survival in your dataset:
+
+🎯 1. PRIMARY DRIVER: Tumor Grade
+*This is the single strongest predictor. Grade IV patients have 8.3x higher mortality risk than Grade I/II patients.*
+
+🎯 2. CRITICAL CO-FACTOR: Treatment Type
 Combination therapy (Surgery+Radio) shows the best outcomes, significantly outperforming single-modality treatments.
 
-🎯 **3. IMPORTANT PROGNOSTIC INDICATOR: KPS Performance Score**
+🎯 3. IMPORTANT PROGNOSTIC INDICATOR: KPS Performance Score
 Patients with scores below 60 have dramatically worse outcomes, regardless of other factors.
 
-🎯 **4. PROMISING BIOMARKERS:**
-- Biomarker 1: High expression correlates with poor prognosis (potential therapeutic target)
-- Biomarker 2: High expression correlates with better outcomes (potential protective factor)`;
+🎯 4. PROMISING BIOMARKERS:
+*- Biomarker 1: High expression correlates with poor prognosis (potential therapeutic target)
+
+Biomarker 2: High expression correlates with better outcomes (potential protective factor)*`;
 
       let result;
       if (focusedType === 'observation') {
