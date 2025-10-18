@@ -19,20 +19,36 @@ const Auth = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user is already logged in
-    const checkUser = async () => {
+    // Listen for auth state changes first
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        navigate("/dashboard");
+      }
+    });
+
+    const initAuth = async () => {
+      // Handle OAuth callback code if present
+      const url = new URL(window.location.href);
+      if (url.searchParams.get("code")) {
+        const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+        if (error) {
+          console.error("OAuth exchange error (Auth):", error.message);
+        } else {
+          // Clean URL and proceed to dashboard
+          window.history.replaceState({}, document.title, window.location.pathname);
+          navigate("/dashboard");
+          return;
+        }
+      }
+
+      // Check if user is already logged in
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         navigate("/dashboard");
       }
     };
-    checkUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        navigate("/dashboard");
-      }
-    });
+    initAuth();
 
     return () => subscription.unsubscribe();
   }, [navigate]);

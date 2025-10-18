@@ -7,16 +7,25 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        navigate("/dashboard");
-      } else {
-        navigate("/auth");
+    const init = async () => {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get("code")) {
+        const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+        if (!error) {
+          // Clean URL and go to dashboard after successful OAuth exchange
+          window.history.replaceState({}, document.title, window.location.pathname);
+          navigate("/dashboard");
+          return;
+        } else {
+          console.error("OAuth exchange error (Index):", error.message);
+        }
       }
+
+      const { data: { session } } = await supabase.auth.getSession();
+      navigate(session ? "/dashboard" : "/auth");
     };
-    
-    checkAuth();
+
+    init();
   }, [navigate]);
 
   return (
