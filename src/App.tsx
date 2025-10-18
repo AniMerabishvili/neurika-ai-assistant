@@ -14,7 +14,8 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="dark">
-      <TooltipProvider>
+      {/* Temporarily remove TooltipProvider to fix hooks error */}
+      {/* <TooltipProvider> */}
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -26,7 +27,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
-      </TooltipProvider>
+      {/* </TooltipProvider> */}
     </ThemeProvider>
   </QueryClientProvider>
 );
