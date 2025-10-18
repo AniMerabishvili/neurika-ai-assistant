@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Upload, FileSpreadsheet, Loader2 } from "lucide-react";
 
 interface FileUploadProps {
-  onFileUploaded: (fileId: string) => void;
+  onFileUploaded: (fileId: string, fileName: string) => void;
 }
 
 const FileUpload = ({ onFileUploaded }: FileUploadProps) => {
@@ -67,7 +67,7 @@ const FileUpload = ({ onFileUploaded }: FileUploadProps) => {
         description: `${file.name} is ready for analysis.`,
       });
 
-      onFileUploaded(data.id);
+      onFileUploaded(data.id, file.name);
     } catch (error: any) {
       toast({
         title: "Upload failed",

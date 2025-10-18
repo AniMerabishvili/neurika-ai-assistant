@@ -9,6 +9,9 @@ import ReasoningCard from "@/components/ReasoningCard";
 
 interface ChatInterfaceProps {
   fileId: string | null;
+  fileName?: string;
+  sessionId?: string | null;
+  onSessionCreated?: (sessionId: string) => void;
 }
 
 interface Message {
@@ -20,41 +23,79 @@ interface Message {
   actionable_conclusion?: string;
 }
 
-const ChatInterface = ({ fileId }: ChatInterfaceProps) => {
+const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCreated }: ChatInterfaceProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(propSessionId || null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    if (fileId) {
+    if (propSessionId) {
+      setSessionId(propSessionId);
+      loadSessionMessages(propSessionId);
+    } else if (fileId && !sessionId) {
       createSession();
     }
-  }, [fileId]);
+  }, [fileId, propSessionId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  const loadSessionMessages = async (sessionId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('chat_messages')
+        .select('*')
+        .eq('session_id', sessionId)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+
+      if (data) {
+        const formattedMessages: Message[] = data.map(msg => ({
+          id: msg.id,
+          role: msg.role as "user" | "assistant",
+          content: msg.content,
+          observation: msg.observation || undefined,
+          interpretation: msg.interpretation || undefined,
+          actionable_conclusion: msg.actionable_conclusion || undefined,
+        }));
+        setMessages(formattedMessages);
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error loading messages",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
 
   const createSession = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      const sessionTitle = fileName ? `Analysis: ${fileName}` : "New Analysis";
+
       const { data, error } = await supabase
         .from('chat_sessions')
         .insert({
           user_id: user.id,
           file_id: fileId,
-          title: "New Analysis",
+          title: sessionTitle,
         })
         .select()
         .single();
 
       if (error) throw error;
       setSessionId(data.id);
+      if (onSessionCreated) {
+        onSessionCreated(data.id);
+      }
     } catch (error: any) {
       toast({
         title: "Error",

@@ -10,9 +10,15 @@ interface Session {
   title: string;
   created_at: string;
   message_count: number;
+  file_id: string | null;
+  file_name: string | null;
 }
 
-const ChatHistory = () => {
+interface ChatHistoryProps {
+  onSessionSelect?: (sessionId: string, fileId: string, fileName: string) => void;
+}
+
+const ChatHistory = ({ onSessionSelect }: ChatHistoryProps) => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -32,6 +38,8 @@ const ChatHistory = () => {
           id,
           title,
           created_at,
+          file_id,
+          uploaded_files(file_name),
           chat_messages(count)
         `)
         .eq('user_id', user.id)
@@ -44,6 +52,8 @@ const ChatHistory = () => {
         title: session.title || 'Untitled Session',
         created_at: session.created_at,
         message_count: session.chat_messages?.[0]?.count || 0,
+        file_id: session.file_id,
+        file_name: session.uploaded_files?.file_name || null,
       })) || [];
 
       setSessions(formattedSessions);
@@ -86,10 +96,20 @@ const ChatHistory = () => {
     );
   }
 
+  const handleSessionClick = (session: Session) => {
+    if (onSessionSelect && session.file_id && session.file_name) {
+      onSessionSelect(session.id, session.file_id, session.file_name);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-4">
       {sessions.map((session) => (
-        <Card key={session.id} className="hover:shadow-md transition-shadow cursor-pointer">
+        <Card 
+          key={session.id} 
+          className="hover:shadow-md transition-shadow cursor-pointer"
+          onClick={() => handleSessionClick(session)}
+        >
           <CardHeader>
             <CardTitle className="text-lg">{session.title}</CardTitle>
             <CardDescription className="flex items-center gap-4 text-sm">

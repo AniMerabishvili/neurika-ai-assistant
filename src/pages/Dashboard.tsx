@@ -14,6 +14,8 @@ const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState<"upload" | "chat" | "history">("upload");
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -49,8 +51,17 @@ const Dashboard = () => {
     navigate("/auth");
   };
 
-  const handleFileUploaded = (fileId: string) => {
+  const handleFileUploaded = (fileId: string, fileName: string) => {
     setSelectedFileId(fileId);
+    setSelectedFileName(fileName);
+    setSelectedSessionId(null);
+    setActiveTab("chat");
+  };
+
+  const handleSessionSelected = (sessionId: string, fileId: string, fileName: string) => {
+    setSelectedSessionId(sessionId);
+    setSelectedFileId(fileId);
+    setSelectedFileName(fileName);
     setActiveTab("chat");
   };
 
@@ -128,8 +139,14 @@ const Dashboard = () => {
       {/* Content */}
       <div className="container mx-auto px-4 py-8">
         {activeTab === "upload" && <FileUpload onFileUploaded={handleFileUploaded} />}
-        {activeTab === "chat" && <ChatInterface fileId={selectedFileId} />}
-        {activeTab === "history" && <ChatHistory />}
+        {activeTab === "chat" && (
+          <ChatInterface 
+            fileId={selectedFileId} 
+            fileName={selectedFileName || undefined}
+            sessionId={selectedSessionId}
+          />
+        )}
+        {activeTab === "history" && <ChatHistory onSessionSelect={handleSessionSelected} />}
       </div>
     </div>
   );
