@@ -22,7 +22,29 @@ const Dashboard = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const checkUser = async () => {
+    // Set up the auth state listener first to avoid missing events
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        navigate("/auth");
+      } else {
+        setUser(session.user);
+      }
+    });
+
+    const initAuth = async () => {
+      // If returning from an OAuth flow, exchange the code for a session
+      const url = new URL(window.location.href);
+      if (url.searchParams.get("code")) {
+        const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+        if (error) {
+          console.error("OAuth exchange error:", error.message);
+        } else {
+          // Clean up the URL to remove params
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      }
+
+      // Then check for an existing session
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         navigate("/auth");
@@ -31,16 +53,8 @@ const Dashboard = () => {
       setUser(session.user);
       setLoading(false);
     };
-    
-    checkUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (!session) {
-        navigate("/auth");
-      } else {
-        setUser(session.user);
-      }
-    });
+    initAuth();
 
     return () => subscription.unsubscribe();
   }, [navigate]);
