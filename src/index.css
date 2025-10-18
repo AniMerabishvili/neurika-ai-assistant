@@ -103,12 +103,34 @@ All colors MUST be HSL.
     background: var(--gradient-hero);
   }
   
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
   .animate-fade-in {
-    animation: fadeIn 0.6s ease-out;
+    animation: fadeIn 0.8s ease-out;
   }
   
   .animate-slide-up {
-    animation: slideUp 0.6s ease-out;
+    animation: slideUp 0.8s ease-out;
+  }
+  
+  .animate-delay-100 {
+    animation-delay: 0.1s;
+    animation-fill-mode: backwards;
+  }
+  
+  .animate-delay-200 {
+    animation-delay: 0.2s;
+    animation-fill-mode: backwards;
+  }
+  
+  .animate-delay-300 {
+    animation-delay: 0.3s;
+    animation-fill-mode: backwards;
   }
   
   @keyframes fadeIn {
@@ -123,7 +145,7 @@ All colors MUST be HSL.
   @keyframes slideUp {
     from {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(40px);
     }
     to {
       opacity: 1;
