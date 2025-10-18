@@ -58,8 +58,81 @@ serve(async (req) => {
 
     console.log('Calling OpenAI API with focus:', focusedType);
 
-    // Hardcoded Q&A pairs for brain tumor dataset
+    // First, check database for predefined Q&A pairs
     const questionLower = question.toLowerCase();
+    
+    // Get user ID from auth header
+    const authHeader = req.headers.get('authorization');
+    let userId: string | null = null;
+    
+    if (authHeader) {
+      try {
+        const token = authHeader.replace('Bearer ', '');
+        const { data: { user } } = await supabase.auth.getUser(token);
+        userId = user?.id || null;
+      } catch (e) {
+        console.log('Could not extract user from token:', e);
+      }
+    }
+
+    // Query database for matching Q&A pairs
+    if (userId) {
+      const { data: qaPairs, error: qaError } = await supabase
+        .from('qa_pairs')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('is_active', true);
+
+      if (!qaError && qaPairs && qaPairs.length > 0) {
+        // Find best matching Q&A pair based on keywords
+        const matchedQA = qaPairs.find(qa => {
+          return qa.keywords.some((keyword: string) => 
+            questionLower.includes(keyword.toLowerCase())
+          );
+        });
+
+        if (matchedQA) {
+          console.log('Found matching Q&A pair:', matchedQA.id);
+          
+          let result;
+          if (focusedType === 'observation') {
+            result = {
+              content: matchedQA.observation_content || "Processing...",
+              observation: matchedQA.observation_content || '',
+              interpretation: '',
+              actionable_conclusion: ''
+            };
+          } else if (focusedType === 'interpretation') {
+            result = {
+              content: matchedQA.interpretation_content || "Processing...",
+              observation: '',
+              interpretation: matchedQA.interpretation_content || '',
+              actionable_conclusion: ''
+            };
+          } else if (focusedType === 'actionable') {
+            result = {
+              content: matchedQA.actionable_content || "Processing...",
+              observation: '',
+              interpretation: '',
+              actionable_conclusion: matchedQA.actionable_content || ''
+            };
+          } else {
+            result = {
+              content: "Complete analysis from predefined Q&A",
+              observation: matchedQA.observation_content || '',
+              interpretation: matchedQA.interpretation_content || '',
+              actionable_conclusion: matchedQA.actionable_content || ''
+            };
+          }
+          
+          return new Response(JSON.stringify(result), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+      }
+    }
+
+    // Fallback to hardcoded Q&A pairs for brain tumor dataset (legacy)
     const isBrainTumorDataset = fileContext.includes('brain_tumor') || fileContext.includes('Tumor_Grade') || fileContext.includes('Glioblastoma');
     
     // Q1: Glioblastoma survival factors analysis

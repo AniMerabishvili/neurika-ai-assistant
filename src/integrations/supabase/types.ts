@@ -111,6 +111,45 @@ export type Database = {
         }
         Relationships: []
       }
+      qa_pairs: {
+        Row: {
+          actionable_content: string | null
+          created_at: string
+          id: string
+          interpretation_content: string | null
+          is_active: boolean
+          keywords: string[]
+          observation_content: string | null
+          question: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          actionable_content?: string | null
+          created_at?: string
+          id?: string
+          interpretation_content?: string | null
+          is_active?: boolean
+          keywords: string[]
+          observation_content?: string | null
+          question: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          actionable_content?: string | null
+          created_at?: string
+          id?: string
+          interpretation_content?: string | null
+          is_active?: boolean
+          keywords?: string[]
+          observation_content?: string | null
+          question?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       uploaded_files: {
         Row: {
           file_name: string
