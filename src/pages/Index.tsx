@@ -21,7 +21,9 @@ const Index = () => {
         }
       }
 
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session) {
         navigate("/dashboard");
       } else {
@@ -51,17 +53,13 @@ const Index = () => {
             </div>
             <span className="text-lg sm:text-xl font-semibold">Neurika</span>
           </div>
-          
+
           <div className="flex items-center gap-2 sm:gap-3">
             <ThemeToggle />
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate("/auth")}
-              className="text-xs sm:text-sm px-2 sm:px-4"
-            >
+            <Button variant="ghost" onClick={() => navigate("/auth")} className="text-xs sm:text-sm px-2 sm:px-4">
               Sign In
             </Button>
-            <Button 
+            <Button
               onClick={() => navigate("/auth")}
               className="gradient-primary text-gray-800 text-xs sm:text-sm px-3 sm:px-4 font-semibold"
             >
@@ -79,28 +77,27 @@ const Index = () => {
               <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
               AI-Powered Data Intelligence
             </div>
-            
+
             <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold leading-tight tracking-tight animate-slide-up animate-delay-100 px-2">
               Transform Data Into
-              <span className="block text-gradient mt-2">
-                Actionable Insights
-              </span>
+              <span className="block h-full text-gradient mt-2">Actionable Insights</span>
             </h1>
-            
+
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-slide-up animate-delay-200 px-4">
-              Upload your data, ask questions in natural language, and get instant AI-powered insights with beautiful visualizations.
+              Upload your data, ask questions in natural language, and get instant AI-powered insights with beautiful
+              visualizations.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-2 sm:pt-4 animate-slide-up animate-delay-300 px-4">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 onClick={() => navigate("/auth")}
                 className="gradient-primary text-gray-800 text-sm sm:text-base px-6 sm:px-8 h-11 sm:h-12 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto font-semibold"
               >
                 Start Free
               </Button>
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 variant="outline"
                 onClick={() => navigate("/auth")}
                 className="text-sm sm:text-base px-6 sm:px-8 h-11 sm:h-12 rounded-xl border-2 w-full sm:w-auto"
@@ -152,14 +149,12 @@ const Index = () => {
       {/* CTA Section */}
       <section className="py-12 sm:py-20 md:py-32 px-4 sm:px-6">
         <div className="container mx-auto max-w-4xl text-center space-y-6 sm:space-y-8">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight px-2">
-            Ready to get started?
-          </h2>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight px-2">Ready to get started?</h2>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
             Join thousands making smarter decisions with AI-powered data analysis.
           </p>
-          <Button 
-            size="lg" 
+          <Button
+            size="lg"
             onClick={() => navigate("/auth")}
             className="gradient-primary text-gray-800 text-sm sm:text-base px-6 sm:px-8 h-11 sm:h-12 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto max-w-xs mx-auto font-semibold"
           >
