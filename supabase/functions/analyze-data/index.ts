@@ -119,120 +119,84 @@ serve(async (req) => {
     )) {
       console.log('Matched Q1: Glioblastoma survival analysis');
       
-      const completeAnalysis = `# 🧬 Glioblastoma Survival Analysis - Complete Report
-
----
-
-## 📋 1. Analysis Plan
+      const completeAnalysis = `**1. Analysis Plan**
 
 I'll analyze your brain tumor dataset to identify the key factors influencing patient survival. I'll start by loading the data, checking its quality, and then performing a comprehensive analysis focusing on tumor grade, biomarkers, and treatment types. I'll include a correlation matrix and statistical tests to determine significance.
 
 ---
 
-## ✅ 2. Data Loading & Quality Check
+**2. Data Loading & Quality Check**
 
-**Status:** Data loaded successfully  
-**Patient Records:** 300  
-**Clinical Variables:** 12  
-**Data Quality:** Excellent - no missing values in key columns
+✅ Data loaded successfully. I'm working with 300 patient records and 12 clinical variables. The data quality is good with no missing values in the key columns we'll be analyzing.
 
-### 📊 Dataset Preview
+**Dataset Preview:**
 
-| Patient_ID | Age | Gender | Tumor Size | Location | Grade | Status |
-|:----------:|:---:|:------:|:----------:|:--------:|:-----:|:------:|
-| 1 | 62 | M | 4.2 cm³ | Frontal | III | ✅ Alive |
-| 2 | 45 | F | 6.8 cm³ | Temporal | IV | ❌ Deceased |
-| 3 | 58 | M | 3.1 cm³ | Parietal | II | ✅ Alive |
+| Patient_ID | Age | Gender | Tumor_Size_cm³ | Tumor_Location | Tumor_Grade | Survival_Status |
+|------------|-----|--------|----------------|----------------|-------------|-----------------|
+| 1 | 62 | M | 4.2 | Frontal | III | Alive |
+| 2 | 45 | F | 6.8 | Temporal | IV | Deceased |
+| 3 | 58 | M | 3.1 | Parietal | II | Alive |
 
 ---
 
-## 📈 3. Initial Overview & Descriptive Statistics
+**3. Initial Overview & Descriptive Statistics**
 
-First, let's understand our patient population. The distribution shows a **significant number of patients with high-grade tumors** (Grade III & IV), which aligns with the serious nature of glioblastoma.
+First, let's understand our patient population. The distribution shows a significant number of patients with high-grade tumors (Grade III & IV), which aligns with the serious nature of glioblastoma.
 
-> 📊 *Visual Reference: Bar chart – Patient Distribution by Tumor Grade*
-
----
-
-## 🔗 4. Correlation Analysis
-
-Now, examining the correlation matrix for numerical features. We can see **strong positive correlations** between Tumor_Grade and Tumor_Size, and **strong negative correlations** between both these factors and KPS_Score. 
-
-This suggests that as tumors become more advanced and larger, patients' functional performance declines significantly.
-
-### 🎯 Key Correlation Insights
-
-| Relationship | Correlation | Interpretation |
-|:------------|:-----------:|:--------------|
-| **Tumor Grade ↔ Tumor Size** | **+0.82** | 🔴 Strong Positive |
-| **Tumor Grade ↔ KPS Score** | **-0.76** | 🔴 Strong Negative |
-| **Biomarker 1 ↔ Survival Time** | **-0.68** | 🟡 Moderate Negative |
+*Visual: Bar chart – Patient Distribution by Tumor Grade*
 
 ---
 
-## 🧪 5. Statistical Testing & Group Comparisons
+**4. Correlation Analysis**
 
-### Survival Analysis
-To directly test survival relationships, I'm comparing tumor characteristics between survivors and non-survivors. The **Mann-Whitney U test** confirms that Tumor_Grade is significantly higher in deceased patients **(p < 0.001)**.
+Now, examining the correlation matrix for numerical features. We can see strong positive correlations between Tumor_Grade and Tumor_Size, and strong negative correlations between both these factors and KPS_Score. This suggests that as tumors become more advanced and larger, patients' functional performance declines significantly.
 
-> 📊 *Visual Reference: Box plot – Tumor Grade Distribution by Survival Status*
+**Key Correlation Insights:**
 
-### Treatment Efficacy Analysis
-Looking at treatment efficacy, patients receiving **Surgery+Radio show the highest survival rate at 78%**, compared to just 22% for Chemo alone. 
-
-A **Chi-squared test** confirms this difference is statistically significant **(p < 0.001)**.
-
-> 📊 *Visual Reference: Bar chart – Survival Rates by Treatment Type*
+| Relation | Value | Type |
+|----------|-------|------|
+| Tumor_Grade ↔ Tumor_Size | +0.82 | Strong Positive |
+| Tumor_Grade ↔ KPS_Score | -0.76 | Strong Negative |
+| Biomarker_1 ↔ Survival_Time | -0.68 | Moderate Negative |
 
 ---
 
-## 🧬 6. Biomarker Analysis
+**5. Statistical Testing & Group Comparisons**
 
-Your genomic biomarkers show **interesting patterns**:
+To directly test survival relationships, I'm comparing tumor characteristics between survivors and non-survivors. The Mann-Whitney U test confirms that Tumor_Grade is significantly higher in deceased patients (p < 0.001). Looking at treatment efficacy, patients receiving Surgery+Radio show the highest survival rate at 78%, compared to 22% for Chemo alone. A Chi-squared test confirms this difference is statistically significant (p < 0.001).
 
-- **Biomarker 1:** Strong negative correlation with survival time **(-0.68)**, suggesting it may be a **risk factor** 🔴
-- **Biomarker 2:** Positive correlation **(+0.54)**, potentially indicating a **protective effect** 🟢
-
-> 📊 *Visual Reference: Scatter plot – Biomarker 1 Expression vs Survival Time*
-
----
-
-# 🎯 FINAL INSIGHT SUMMARY
-
-## Key Factors Associated with Patient Survival
-
-### 1️⃣ **PRIMARY DRIVER: Tumor Grade** 🔴
-> **Impact:** This is the single strongest predictor  
-> **Risk:** Grade IV patients have **8.3x higher mortality risk** than Grade I/II patients  
-> **Significance:** p < 0.001
-
-### 2️⃣ **CRITICAL CO-FACTOR: Treatment Type** 💊
-> **Best Outcome:** Combination therapy (Surgery + Radio)  
-> **Success Rate:** 78% survival rate vs. 22% for single-modality treatments  
-> **Recommendation:** Multi-modal treatment approach strongly recommended
-
-### 3️⃣ **IMPORTANT PROGNOSTIC INDICATOR: KPS Performance Score** 📊
-> **Threshold:** Scores below 60 show dramatically worse outcomes  
-> **Pattern:** Poor prognosis regardless of other factors  
-> **Clinical Note:** Early functional status assessment is critical
-
-### 4️⃣ **PROMISING BIOMARKERS** 🧬
-> **Biomarker 1 (Risk Factor):**  
-> - High expression correlates with poor prognosis  
-> - Potential therapeutic target for intervention  
-> 
-> **Biomarker 2 (Protective Factor):**  
-> - High expression correlates with better outcomes  
-> - May represent protective mechanism worth investigating
+*Visuals:*
+- Box plot – Tumor Grade Distribution by Survival Status
+- Bar chart – Survival Rates by Treatment Type
 
 ---
 
-## 💡 Clinical Implications
+**6. Biomarker Analysis**
 
-✅ **Primary Focus:** Tumor grade remains the strongest predictor  
-✅ **Treatment Strategy:** Prioritize combination therapy approaches  
-✅ **Early Assessment:** Monitor KPS scores for prognostic insight  
-✅ **Research Direction:** Further investigate biomarker roles in treatment planning`;
+Your genomic biomarkers show interesting patterns. Biomarker_1 has a strong negative correlation with survival time (-0.68), suggesting it may be a risk factor. Conversely, Biomarker_2 shows a positive correlation (+0.54), potentially indicating a protective effect.
+
+*Visual: Scatter plot – Biomarker 1 Expression vs Survival Time*
+
+---
+
+**Final Insight Summary**
+
+**1. Primary Driver: Tumor Grade**
+
+This is the single strongest predictor. Grade IV patients have 8.3x higher mortality risk than Grade I/II patients.
+
+**2. Critical Co-Factor: Treatment Type**
+
+Combination therapy (Surgery + Radio) shows the best outcomes, significantly outperforming single-modality treatments.
+
+**3. Important Prognostic Indicator: KPS Performance Score**
+
+Patients with scores below 60 have dramatically worse outcomes, regardless of other factors.
+
+**4. Promising Biomarkers**
+
+- Biomarker 1: High expression correlates with poor prognosis (potential therapeutic target)
+- Biomarker 2: High expression correlates with better outcomes (potential protective factor)`;
 
       // Return complete analysis in observation field for single card display
       const result = {
