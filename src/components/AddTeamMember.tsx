@@ -67,11 +67,19 @@ export default function AddTeamMember() {
     setIsSubmitting(true);
 
     try {
-      // TODO: Implement team member invitation logic
-      console.log("Sending invitation:", data);
+      const { supabase } = await import("@/integrations/supabase/client");
       
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const { error } = await supabase.functions.invoke("send-team-invitation", {
+        body: {
+          email: data.email,
+          role: data.role,
+          message: data.message,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
 
       toast({
         title: "Invitation sent!",
@@ -80,10 +88,11 @@ export default function AddTeamMember() {
 
       form.reset();
       setOpen(false);
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Invitation error:", error);
       toast({
         title: "Error",
-        description: "Failed to send invitation. Please try again.",
+        description: error.message || "Failed to send invitation. Please try again.",
         variant: "destructive",
       });
     } finally {
