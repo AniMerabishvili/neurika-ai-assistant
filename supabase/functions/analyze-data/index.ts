@@ -341,11 +341,12 @@ Standard logistic regression was unstable due to sparse data; Firth correction i
 
 The dataset loads fine and has a reasonable mix of clinical, genomic, and survival variables. Logistic regression shows clear signs of quasi-complete separation and sparse categories for some factor levels (tiny sample with multiple predictors). That's why the standard glm didn't converge and why the Wald CIs explode. I switched to a Firth correction (logistf) to stabilize inference; those results are more trustworthy in this setting.`;
 
-      // Return complete analysis in observation field for single card display
+      // Return complete analysis in the appropriate field based on focusedType
+      // For statistical/correlation questions, put in interpretation field
       const result = {
         content: "Complete statistical analysis of brain tumor dataset",
-        observation: completeAnalysis,
-        interpretation: '',
+        observation: '',
+        interpretation: completeAnalysis,
         actionable_conclusion: ''
       };
       
