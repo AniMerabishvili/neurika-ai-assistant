@@ -47,7 +47,7 @@ const Index = () => {
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="p-1.5 sm:p-2 rounded-xl gradient-primary">
-              <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+              <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
             </div>
             <span className="text-lg sm:text-xl font-semibold">Neurika</span>
           </div>
@@ -63,7 +63,7 @@ const Index = () => {
             </Button>
             <Button 
               onClick={() => navigate("/auth")}
-              className="gradient-primary text-blue-600 text-xs sm:text-sm px-3 sm:px-4"
+              className="gradient-primary text-gray-800 text-xs sm:text-sm px-3 sm:px-4 font-semibold"
             >
               Get Started
             </Button>
@@ -95,7 +95,7 @@ const Index = () => {
               <Button 
                 size="lg" 
                 onClick={() => navigate("/auth")}
-                className="gradient-primary text-blue-600 text-sm sm:text-base px-6 sm:px-8 h-11 sm:h-12 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
+                className="gradient-primary text-gray-800 text-sm sm:text-base px-6 sm:px-8 h-11 sm:h-12 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto font-semibold"
               >
                 Start Free
               </Button>
@@ -118,7 +118,7 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8">
             <div className="space-y-3 sm:space-y-4 p-6 sm:p-8 rounded-2xl bg-background border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg animate-fade-in">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl gradient-primary flex items-center justify-center">
-                <Brain className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                <Brain className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800" />
               </div>
               <h3 className="text-lg sm:text-xl font-semibold">Smart Analysis</h3>
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
@@ -128,7 +128,7 @@ const Index = () => {
 
             <div className="space-y-3 sm:space-y-4 p-6 sm:p-8 rounded-2xl bg-background border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg animate-fade-in animate-delay-100">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl gradient-primary flex items-center justify-center">
-                <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800" />
               </div>
               <h3 className="text-lg sm:text-xl font-semibold">Lightning Fast</h3>
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
@@ -138,7 +138,7 @@ const Index = () => {
 
             <div className="space-y-3 sm:space-y-4 p-6 sm:p-8 rounded-2xl bg-background border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg animate-fade-in animate-delay-200">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl gradient-primary flex items-center justify-center">
-                <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800" />
               </div>
               <h3 className="text-lg sm:text-xl font-semibold">Secure & Private</h3>
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
@@ -161,7 +161,7 @@ const Index = () => {
           <Button 
             size="lg" 
             onClick={() => navigate("/auth")}
-            className="gradient-primary text-blue-600 text-sm sm:text-base px-6 sm:px-8 h-11 sm:h-12 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto max-w-xs mx-auto"
+            className="gradient-primary text-gray-800 text-sm sm:text-base px-6 sm:px-8 h-11 sm:h-12 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto max-w-xs mx-auto font-semibold"
           >
             Get Started Free
           </Button>
@@ -174,7 +174,7 @@ const Index = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4">
             <div className="flex items-center gap-2">
               <div className="p-1.5 rounded-lg gradient-primary">
-                <Brain className="w-4 h-4 text-blue-600" />
+                <Brain className="w-4 h-4 text-gray-800" />
               </div>
               <span className="text-sm font-medium">Neurika</span>
             </div>
