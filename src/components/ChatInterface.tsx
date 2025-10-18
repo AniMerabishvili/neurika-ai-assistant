@@ -344,7 +344,7 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
                       />
                     )}
                     {!message.relevantCard && (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-4">
                         {message.observation && message.observation !== "No observation available" && (
                           <ReasoningCard
                             icon={<Eye className="w-5 h-5" />}
