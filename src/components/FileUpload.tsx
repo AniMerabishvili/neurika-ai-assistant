@@ -42,7 +42,7 @@ const FileUpload = ({ onFileUploaded }: FileUploadProps) => {
       // Upload to storage
       const filePath = `${user.id}/${Date.now()}_${file.name}`;
       const { error: uploadError } = await supabase.storage
-        .from('datasets')
+        .from('uploads')
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
