@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
-import { LogOut, Upload, MessageSquare, History, BookOpen, BarChart3 } from "lucide-react";
+import { LogOut, Upload, MessageSquare, History, BarChart3 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ThemeToggle from "@/components/ThemeToggle";
 import FileUpload from "@/components/FileUpload";
@@ -15,7 +15,7 @@ import { Card, CardContent } from "@/components/ui/card";
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"upload" | "chat" | "history" | "qa" | "dataDashboard">("upload");
+  const [activeTab, setActiveTab] = useState<"upload" | "chat" | "history" | "dataDashboard">("upload");
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
@@ -200,17 +200,6 @@ const Dashboard = () => {
               History
             </button>
             <button
-              onClick={() => setActiveTab("qa")}
-              className={`flex items-center gap-2 px-6 py-3 border-b-2 transition-colors ${
-                activeTab === "qa"
-                  ? "border-primary text-primary font-medium"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <BookOpen className="w-4 h-4" />
-              Q&A Management
-            </button>
-            <button
               onClick={() => setActiveTab("dataDashboard")}
               className={`flex items-center gap-2 px-6 py-3 border-b-2 transition-colors ${
                 activeTab === "dataDashboard"
@@ -241,11 +230,6 @@ const Dashboard = () => {
             onSessionSelect={handleSessionSelected}
             refreshTrigger={historyRefreshTrigger}
           />
-        )}
-        {activeTab === "qa" && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Q&A Management - Coming soon</p>
-          </div>
         )}
         {activeTab === "dataDashboard" && (
           <>
