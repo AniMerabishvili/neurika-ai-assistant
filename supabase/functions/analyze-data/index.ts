@@ -215,7 +215,9 @@ Patients with scores below 60 have dramatically worse outcomes, regardless of ot
     if (isBrainTumorDataset && (
       questionLower.includes('correlation') || 
       questionLower.includes('statistical') ||
-      (questionLower.includes('relationship') && questionLower.includes('biomarker'))
+      questionLower.includes('statistically') ||
+      (questionLower.includes('relationship') && questionLower.includes('biomarker')) ||
+      (questionLower.includes('relationships') && (questionLower.includes('biomarker') || questionLower.includes('tumor')))
     )) {
       console.log('Matched Q2: Statistical correlation analysis');
       
