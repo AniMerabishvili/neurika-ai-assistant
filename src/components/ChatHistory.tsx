@@ -6,6 +6,7 @@ import { Clock, MessageSquare, Pencil, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,6 +47,8 @@ const ChatHistory = ({ onSessionSelect, refreshTrigger }: ChatHistoryProps) => {
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [newTitle, setNewTitle] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkDeleteDialogOpen, setBulkDeleteDialogOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -129,6 +132,7 @@ const ChatHistory = ({ onSessionSelect, refreshTrigger }: ChatHistoryProps) => {
   }
 
   const handleSessionClick = (session: Session) => {
+    if (selectedIds.size > 0) return; // Prevent navigation when in selection mode
     if (onSessionSelect && session.file_id && session.file_name) {
       onSessionSelect(session.id, session.file_id, session.file_name);
     }
@@ -145,6 +149,28 @@ const ChatHistory = ({ onSessionSelect, refreshTrigger }: ChatHistoryProps) => {
     setSelectedSession(session);
     setNewTitle(session.title);
     setRenameDialogOpen(true);
+  };
+
+  const toggleSelect = (sessionId: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(sessionId)) {
+      newSelected.delete(sessionId);
+    } else {
+      newSelected.add(sessionId);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === sessions.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(sessions.map(s => s.id)));
+    }
+  };
+
+  const handleBulkDeleteClick = () => {
+    setBulkDeleteDialogOpen(true);
   };
 
   const confirmDelete = async () => {
@@ -172,6 +198,34 @@ const ChatHistory = ({ onSessionSelect, refreshTrigger }: ChatHistoryProps) => {
     } finally {
       setDeleteDialogOpen(false);
       setSelectedSession(null);
+    }
+  };
+
+  const confirmBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+
+    try {
+      const { error } = await supabase
+        .from('chat_sessions')
+        .delete()
+        .in('id', Array.from(selectedIds));
+
+      if (error) throw error;
+
+      setSessions(sessions.filter(s => !selectedIds.has(s.id)));
+      toast({
+        title: "Chats deleted",
+        description: `Successfully deleted ${selectedIds.size} chat${selectedIds.size > 1 ? 's' : ''}.`,
+      });
+      setSelectedIds(new Set());
+    } catch (error: any) {
+      toast({
+        title: "Error deleting chats",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setBulkDeleteDialogOpen(false);
     }
   };
 
@@ -209,44 +263,79 @@ const ChatHistory = ({ onSessionSelect, refreshTrigger }: ChatHistoryProps) => {
   return (
     <>
       <div className="max-w-4xl mx-auto space-y-4">
+        {sessions.length > 0 && (
+          <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={selectedIds.size === sessions.length && sessions.length > 0}
+                onCheckedChange={toggleSelectAll}
+                id="select-all"
+              />
+              <label htmlFor="select-all" className="text-sm font-medium cursor-pointer">
+                Select All ({selectedIds.size}/{sessions.length})
+              </label>
+            </div>
+            {selectedIds.size > 0 && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleBulkDeleteClick}
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete Selected ({selectedIds.size})
+              </Button>
+            )}
+          </div>
+        )}
+
         {sessions.map((session) => (
           <Card 
             key={session.id} 
-            className="hover:shadow-md transition-shadow cursor-pointer group"
+            className={`hover:shadow-md transition-shadow cursor-pointer group ${
+              selectedIds.has(session.id) ? 'ring-2 ring-primary' : ''
+            }`}
             onClick={() => handleSessionClick(session)}
           >
             <CardHeader>
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <CardTitle className="text-lg">{session.title}</CardTitle>
-                  <CardDescription className="flex items-center gap-4 text-sm mt-2">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      {formatDistanceToNow(new Date(session.created_at), { addSuffix: true })}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MessageSquare className="w-4 h-4" />
-                      {session.message_count} messages
-                    </span>
-                  </CardDescription>
-                </div>
-                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={(e) => handleRenameClick(e, session)}
-                    className="h-8 w-8"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={(e) => handleDeleteClick(e, session)}
-                    className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+              <div className="flex items-start gap-4">
+                <Checkbox
+                  checked={selectedIds.has(session.id)}
+                  onCheckedChange={() => toggleSelect(session.id)}
+                  onClick={(e) => e.stopPropagation()}
+                  className="mt-1"
+                />
+                <div className="flex-1 flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <CardTitle className="text-lg">{session.title}</CardTitle>
+                    <CardDescription className="flex items-center gap-4 text-sm mt-2">
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-4 h-4" />
+                        {formatDistanceToNow(new Date(session.created_at), { addSuffix: true })}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <MessageSquare className="w-4 h-4" />
+                        {session.message_count} messages
+                      </span>
+                    </CardDescription>
+                  </div>
+                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => handleRenameClick(e, session)}
+                      className="h-8 w-8"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => handleDeleteClick(e, session)}
+                      className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </CardHeader>
@@ -266,6 +355,23 @@ const ChatHistory = ({ onSessionSelect, refreshTrigger }: ChatHistoryProps) => {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={bulkDeleteDialogOpen} onOpenChange={setBulkDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete {selectedIds.size} chat{selectedIds.size > 1 ? 's' : ''}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete {selectedIds.size} selected chat{selectedIds.size > 1 ? 's' : ''} and all their messages. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmBulkDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete All
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
