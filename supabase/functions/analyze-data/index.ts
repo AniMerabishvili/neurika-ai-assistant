@@ -119,7 +119,7 @@ serve(async (req) => {
     )) {
       console.log('Matched Q1: Glioblastoma survival analysis');
       
-      const observationContent = `**1. Analysis Plan**
+      const completeAnalysis = `**1. Analysis Plan**
 
 I'll analyze your brain tumor dataset to identify the key factors influencing patient survival. I'll start by loading the data, checking its quality, and then performing a comprehensive analysis focusing on tumor grade, biomarkers, and treatment types. I'll include a correlation matrix and statistical tests to determine significance.
 
@@ -147,47 +147,49 @@ Now, examining the correlation matrix for numerical features. We can see strong 
 **Key Correlation Insights:**
 - Tumor_Grade ↔ Tumor_Size: +0.82 (Strong Positive)
 - Tumor_Grade ↔ KPS_Score: -0.76 (Strong Negative)
-- Biomarker_1 ↔ Survival_Time: -0.68 (Moderate Negative)`;
+- Biomarker_1 ↔ Survival_Time: -0.68 (Moderate Negative)
 
-      const interpretationContent = `**5. Statistical Testing & Group Comparisons**
+**5. Statistical Testing & Group Comparisons**
 
 To directly test survival relationships, I'm comparing tumor characteristics between survivors and non-survivors. The Mann-Whitney U test confirms that Tumor_Grade is significantly higher in deceased patients (p < 0.001).
 
-*Visual: Box plot – Tumor Grade Distribution by Survival Status*
+*Visuals:*
+- Box plot – Tumor Grade Distribution by Survival Status
+- Bar chart – Survival Rates by Treatment Type
 
 Looking at treatment efficacy, patients receiving Surgery+Radio show the highest survival rate at 78%, compared to 22% for Chemo alone. A Chi-squared test confirms this difference is statistically significant (p < 0.001).
-
-*Visual: Bar chart – Survival Rates by Treatment Type*
 
 **6. Biomarker Analysis**
 
 Your genomic biomarkers show interesting patterns. Biomarker_1 has a strong negative correlation with survival time (-0.68), suggesting it may be a risk factor. Conversely, Biomarker_2 shows a positive correlation (+0.54), potentially indicating a protective effect.
 
-*Visual: Scatter plot – Biomarker 1 Expression vs Survival Time*`;
+*Visual: Scatter plot – Biomarker 1 Expression vs Survival Time*
 
-      const actionableContent = `**FINAL INSIGHT SUMMARY**
+---
+
+## **FINAL INSIGHT SUMMARY**
 
 Based on my analysis, here are the key factors most strongly associated with patient survival in your dataset:
 
-**🎯 1. PRIMARY DRIVER: Tumor Grade**
+### **🎯 1. Primary Driver: Tumor Grade**
 This is the single strongest predictor. Grade IV patients have 8.3x higher mortality risk than Grade I/II patients.
 
-**🎯 2. CRITICAL CO-FACTOR: Treatment Type**
-Combination therapy (Surgery+Radio) shows the best outcomes, significantly outperforming single-modality treatments.
+### **🎯 2. Critical Co-Factor: Treatment Type**
+Combination therapy (Surgery + Radio) shows the best outcomes, significantly outperforming single-modality treatments.
 
-**🎯 3. IMPORTANT PROGNOSTIC INDICATOR: KPS Performance Score**
+### **🎯 3. Important Prognostic Indicator: KPS Performance Score**
 Patients with scores below 60 have dramatically worse outcomes, regardless of other factors.
 
-**🎯 4. PROMISING BIOMARKERS:**
-- Biomarker 1: High expression correlates with poor prognosis (potential therapeutic target)
-- Biomarker 2: High expression correlates with better outcomes (potential protective factor)`;
+### **🎯 4. Promising Biomarkers**
+- **Biomarker 1:** High expression correlates with poor prognosis (potential therapeutic target)
+- **Biomarker 2:** High expression correlates with better outcomes (potential protective factor)`;
 
-      // For hardcoded Q&A, always return all three sections regardless of focusedType
+      // Return complete analysis in observation field for single card display
       const result = {
-        content: "Complete analysis of brain tumor survival factors",
-        observation: observationContent,
-        interpretation: interpretationContent,
-        actionable_conclusion: actionableContent
+        content: "Complete brain tumor survival analysis",
+        observation: completeAnalysis,
+        interpretation: '',
+        actionable_conclusion: ''
       };
       
       return new Response(JSON.stringify(result), {
