@@ -2,8 +2,28 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Clock, MessageSquare } from "lucide-react";
+import { Clock, MessageSquare, Pencil, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Session {
   id: string;
@@ -22,6 +42,10 @@ interface ChatHistoryProps {
 const ChatHistory = ({ onSessionSelect, refreshTrigger }: ChatHistoryProps) => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [selectedSession, setSelectedSession] = useState<Session | null>(null);
+  const [newTitle, setNewTitle] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -110,30 +134,172 @@ const ChatHistory = ({ onSessionSelect, refreshTrigger }: ChatHistoryProps) => {
     }
   };
 
+  const handleDeleteClick = (e: React.MouseEvent, session: Session) => {
+    e.stopPropagation();
+    setSelectedSession(session);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleRenameClick = (e: React.MouseEvent, session: Session) => {
+    e.stopPropagation();
+    setSelectedSession(session);
+    setNewTitle(session.title);
+    setRenameDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedSession) return;
+
+    try {
+      const { error } = await supabase
+        .from('chat_sessions')
+        .delete()
+        .eq('id', selectedSession.id);
+
+      if (error) throw error;
+
+      setSessions(sessions.filter(s => s.id !== selectedSession.id));
+      toast({
+        title: "Chat deleted",
+        description: "The chat has been successfully deleted.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error deleting chat",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setDeleteDialogOpen(false);
+      setSelectedSession(null);
+    }
+  };
+
+  const confirmRename = async () => {
+    if (!selectedSession || !newTitle.trim()) return;
+
+    try {
+      const { error } = await supabase
+        .from('chat_sessions')
+        .update({ title: newTitle.trim() })
+        .eq('id', selectedSession.id);
+
+      if (error) throw error;
+
+      setSessions(sessions.map(s => 
+        s.id === selectedSession.id ? { ...s, title: newTitle.trim() } : s
+      ));
+      toast({
+        title: "Chat renamed",
+        description: "The chat has been successfully renamed.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error renaming chat",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setRenameDialogOpen(false);
+      setSelectedSession(null);
+      setNewTitle("");
+    }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto space-y-4">
-      {sessions.map((session) => (
-        <Card 
-          key={session.id} 
-          className="hover:shadow-md transition-shadow cursor-pointer"
-          onClick={() => handleSessionClick(session)}
-        >
-          <CardHeader>
-            <CardTitle className="text-lg">{session.title}</CardTitle>
-            <CardDescription className="flex items-center gap-4 text-sm">
-              <span className="flex items-center gap-1">
-                <Clock className="w-4 h-4" />
-                {formatDistanceToNow(new Date(session.created_at), { addSuffix: true })}
-              </span>
-              <span className="flex items-center gap-1">
-                <MessageSquare className="w-4 h-4" />
-                {session.message_count} messages
-              </span>
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      ))}
-    </div>
+    <>
+      <div className="max-w-4xl mx-auto space-y-4">
+        {sessions.map((session) => (
+          <Card 
+            key={session.id} 
+            className="hover:shadow-md transition-shadow cursor-pointer group"
+            onClick={() => handleSessionClick(session)}
+          >
+            <CardHeader>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <CardTitle className="text-lg">{session.title}</CardTitle>
+                  <CardDescription className="flex items-center gap-4 text-sm mt-2">
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-4 h-4" />
+                      {formatDistanceToNow(new Date(session.created_at), { addSuffix: true })}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <MessageSquare className="w-4 h-4" />
+                      {session.message_count} messages
+                    </span>
+                  </CardDescription>
+                </div>
+                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => handleRenameClick(e, session)}
+                    className="h-8 w-8"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => handleDeleteClick(e, session)}
+                    className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+          </Card>
+        ))}
+      </div>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete chat?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete "{selectedSession?.title}" and all its messages. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Rename chat</DialogTitle>
+            <DialogDescription>
+              Enter a new name for this chat session.
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            placeholder="Chat title"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                confirmRename();
+              }
+            }}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRenameDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={confirmRename} disabled={!newTitle.trim()}>
+              Rename
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
