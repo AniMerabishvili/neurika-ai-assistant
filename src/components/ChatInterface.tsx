@@ -71,9 +71,42 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
       setSessionId(propSessionId);
       loadSessionWithFile(propSessionId);
     } else if (fileId && !sessionId && !sessionCreatingRef.current) {
-      createSession();
+      // Check if a session already exists for this file
+      checkAndCreateSession();
     }
   }, [fileId, propSessionId]);
+
+  const checkAndCreateSession = async () => {
+    if (sessionCreatingRef.current || !fileId) return;
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Check if a session already exists for this file
+      const { data: existingSessions, error: checkError } = await supabase
+        .from('chat_sessions')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('file_id', fileId)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (checkError) throw checkError;
+
+      if (existingSessions && existingSessions.length > 0) {
+        console.log('Session already exists for this file, using existing session:', existingSessions[0].id);
+        setSessionId(existingSessions[0].id);
+        loadSessionWithFile(existingSessions[0].id);
+        return;
+      }
+
+      // No existing session found, create a new one
+      await createSession();
+    } catch (error) {
+      console.error('Error checking for existing session:', error);
+    }
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
