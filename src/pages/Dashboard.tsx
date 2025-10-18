@@ -251,40 +251,75 @@ const Dashboard = () => {
 
       {/* Content */}
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
-        {activeTab === "upload" && <FileUpload onFileUploaded={handleFileUploaded} />}
-        {activeTab === "chat" && (
-          <ChatInterface 
-            fileId={selectedFileId} 
-            fileName={selectedFileName || undefined}
-            sessionId={selectedSessionId}
-            onSessionCreated={handleSessionCreated}
-          />
+        {!selectedFileId && activeTab === "upload" && (
+          <div className="max-w-2xl mx-auto text-center space-y-6 py-12">
+            <div className="inline-flex p-4 rounded-2xl gradient-primary mb-4">
+              <MessageSquare className="w-12 h-12 text-white" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold">Welcome to Neurika.ai</h2>
+            <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
+              Your AI-powered data assistant is ready to help you analyze and understand your data. 
+              Get started by uploading a CSV file or selecting a previous chat from your history.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <Button 
+                onClick={() => setActiveTab("upload")}
+                className="gradient-primary text-white"
+                size="lg"
+              >
+                <Upload className="w-4 h-4 mr-2" />
+                Upload Your Data
+              </Button>
+              <Button 
+                onClick={() => setActiveTab("history")}
+                variant="outline"
+                size="lg"
+              >
+                <History className="w-4 h-4 mr-2" />
+                View History
+              </Button>
+            </div>
+          </div>
         )}
-        {activeTab === "history" && (
-          <ChatHistory 
-            onSessionSelect={handleSessionSelected}
-            refreshTrigger={historyRefreshTrigger}
-          />
-        )}
-        {activeTab === "dataDashboard" && (
+        
+        {selectedFileId || activeTab !== "upload" ? (
           <>
-            {loadingFile ? (
-              <Card>
-                <CardContent className="p-6">
-                  <p className="text-muted-foreground text-center">Loading dashboard...</p>
-                </CardContent>
-              </Card>
-            ) : fileContent ? (
-              <DataDashboard fileContent={fileContent} fileName={fileName} />
-            ) : (
-              <Card>
-                <CardContent className="p-12 text-center">
-                  <p className="text-muted-foreground">No data uploaded yet. Please upload a file to view the dashboard.</p>
-                </CardContent>
-              </Card>
+            {activeTab === "upload" && <FileUpload onFileUploaded={handleFileUploaded} />}
+            {activeTab === "chat" && (
+              <ChatInterface 
+                fileId={selectedFileId} 
+                fileName={selectedFileName || undefined}
+                sessionId={selectedSessionId}
+                onSessionCreated={handleSessionCreated}
+              />
+            )}
+            {activeTab === "history" && (
+              <ChatHistory 
+                onSessionSelect={handleSessionSelected}
+                refreshTrigger={historyRefreshTrigger}
+              />
+            )}
+            {activeTab === "dataDashboard" && (
+              <>
+                {loadingFile ? (
+                  <Card>
+                    <CardContent className="p-6">
+                      <p className="text-muted-foreground text-center">Loading dashboard...</p>
+                    </CardContent>
+                  </Card>
+                ) : fileContent ? (
+                  <DataDashboard fileContent={fileContent} fileName={fileName} />
+                ) : (
+                  <Card>
+                    <CardContent className="p-12 text-center">
+                      <p className="text-muted-foreground">No data uploaded yet. Please upload a file to view the dashboard.</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </>
             )}
           </>
-        )}
+        ) : null}
       </div>
     </div>
   );
