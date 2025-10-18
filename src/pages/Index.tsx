@@ -72,7 +72,7 @@ const Index = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-12 sm:pt-32 sm:pb-20 md:pt-40 md:pb-32 px-4 sm:px-6">
+      <section className="pt-32 pb-12 sm:pt-40 sm:pb-20 md:pt-48 lg:pt-56 md:pb-32 px-4 sm:px-6">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center space-y-6 sm:space-y-8 animate-fade-in">
             <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-primary/20 bg-primary/5 text-xs sm:text-sm text-muted-foreground animate-slide-up">
