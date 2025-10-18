@@ -375,7 +375,7 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
                     </div>
                   </div>
                 ) : (
-                  <div className="max-w-2xl">
+                  <div className="w-full">
                     {message.relevantCard === "observation" && (
                       <ReasoningCard
                         icon={<Eye className="w-5 h-5" />}
