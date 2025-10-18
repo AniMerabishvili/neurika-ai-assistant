@@ -44,26 +44,26 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/40">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl gradient-primary">
-              <Brain className="w-5 h-5 text-white" />
+            <div className="p-1.5 sm:p-2 rounded-xl gradient-primary">
+              <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <span className="text-xl font-semibold">Neurika</span>
+            <span className="text-lg sm:text-xl font-semibold">Neurika</span>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <ThemeToggle />
             <Button 
               variant="ghost" 
               onClick={() => navigate("/auth")}
-              className="text-sm"
+              className="text-xs sm:text-sm px-2 sm:px-4"
             >
               Sign In
             </Button>
             <Button 
               onClick={() => navigate("/auth")}
-              className="gradient-primary text-white text-sm"
+              className="gradient-primary text-white text-xs sm:text-sm px-3 sm:px-4"
             >
               Get Started
             </Button>
@@ -72,30 +72,30 @@ const Index = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 md:pt-40 md:pb-32 px-6">
+      <section className="pt-24 pb-12 sm:pt-32 sm:pb-20 md:pt-40 md:pb-32 px-4 sm:px-6">
         <div className="container mx-auto max-w-5xl">
-          <div className="text-center space-y-8 animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 text-sm text-muted-foreground animate-slide-up">
-              <Sparkles className="w-4 h-4 text-primary" />
+          <div className="text-center space-y-6 sm:space-y-8 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-primary/20 bg-primary/5 text-xs sm:text-sm text-muted-foreground animate-slide-up">
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
               AI-Powered Data Intelligence
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold leading-tight tracking-tight animate-slide-up animate-delay-100">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold leading-tight tracking-tight animate-slide-up animate-delay-100 px-2">
               Transform Data Into
               <span className="block text-gradient mt-2">
                 Actionable Insights
               </span>
             </h1>
             
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-slide-up animate-delay-200">
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-slide-up animate-delay-200 px-4">
               Upload your data, ask questions in natural language, and get instant AI-powered insights with beautiful visualizations.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 animate-slide-up animate-delay-300">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-2 sm:pt-4 animate-slide-up animate-delay-300 px-4">
               <Button 
                 size="lg" 
                 onClick={() => navigate("/auth")}
-                className="gradient-primary text-white text-base px-8 h-12 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                className="gradient-primary text-white text-sm sm:text-base px-6 sm:px-8 h-11 sm:h-12 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
               >
                 Start Free
               </Button>
@@ -103,7 +103,7 @@ const Index = () => {
                 size="lg" 
                 variant="outline"
                 onClick={() => navigate("/auth")}
-                className="text-base px-8 h-12 rounded-xl border-2"
+                className="text-sm sm:text-base px-6 sm:px-8 h-11 sm:h-12 rounded-xl border-2 w-full sm:w-auto"
               >
                 View Demo
               </Button>
@@ -113,35 +113,35 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 md:py-32 px-6 bg-muted/30">
+      <section className="py-12 sm:py-20 md:py-32 px-4 sm:px-6 bg-muted/30">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="space-y-4 p-8 rounded-2xl bg-background border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg animate-fade-in">
-              <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center">
-                <Brain className="w-6 h-6 text-white" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8">
+            <div className="space-y-3 sm:space-y-4 p-6 sm:p-8 rounded-2xl bg-background border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg animate-fade-in">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl gradient-primary flex items-center justify-center">
+                <Brain className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold">Smart Analysis</h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <h3 className="text-lg sm:text-xl font-semibold">Smart Analysis</h3>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 AI algorithms analyze your data and deliver intelligent insights instantly.
               </p>
             </div>
 
-            <div className="space-y-4 p-8 rounded-2xl bg-background border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg animate-fade-in animate-delay-100">
-              <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center">
-                <Zap className="w-6 h-6 text-white" />
+            <div className="space-y-3 sm:space-y-4 p-6 sm:p-8 rounded-2xl bg-background border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg animate-fade-in animate-delay-100">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl gradient-primary flex items-center justify-center">
+                <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold">Lightning Fast</h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <h3 className="text-lg sm:text-xl font-semibold">Lightning Fast</h3>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 Process large datasets in seconds with optimized infrastructure.
               </p>
             </div>
 
-            <div className="space-y-4 p-8 rounded-2xl bg-background border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg animate-fade-in animate-delay-200">
-              <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center">
-                <Shield className="w-6 h-6 text-white" />
+            <div className="space-y-3 sm:space-y-4 p-6 sm:p-8 rounded-2xl bg-background border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg animate-fade-in animate-delay-200">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl gradient-primary flex items-center justify-center">
+                <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold">Secure & Private</h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <h3 className="text-lg sm:text-xl font-semibold">Secure & Private</h3>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 Your data is encrypted and never shared with third parties.
               </p>
             </div>
@@ -150,18 +150,18 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 md:py-32 px-6">
-        <div className="container mx-auto max-w-4xl text-center space-y-8">
-          <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+      <section className="py-12 sm:py-20 md:py-32 px-4 sm:px-6">
+        <div className="container mx-auto max-w-4xl text-center space-y-6 sm:space-y-8">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight px-2">
             Ready to get started?
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
             Join thousands making smarter decisions with AI-powered data analysis.
           </p>
           <Button 
             size="lg" 
             onClick={() => navigate("/auth")}
-            className="gradient-primary text-white text-base px-8 h-12 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            className="gradient-primary text-white text-sm sm:text-base px-6 sm:px-8 h-11 sm:h-12 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto max-w-xs mx-auto"
           >
             Get Started Free
           </Button>
@@ -169,16 +169,16 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-8 px-6 bg-muted/30">
+      <footer className="border-t py-6 sm:py-8 px-4 sm:px-6 bg-muted/30">
         <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4">
             <div className="flex items-center gap-2">
               <div className="p-1.5 rounded-lg gradient-primary">
                 <Brain className="w-4 h-4 text-white" />
               </div>
               <span className="text-sm font-medium">Neurika</span>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground text-center">
               © 2025 Neurika. All rights reserved.
             </p>
           </div>
