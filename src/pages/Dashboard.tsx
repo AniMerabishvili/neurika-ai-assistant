@@ -60,7 +60,15 @@ const Dashboard = () => {
   }, [navigate]);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      // Ignore errors - session may already be invalid
+      console.log("Sign out error (ignored):", error);
+    }
+    
+    // Always clear local state and redirect regardless of API result
+    setUser(null);
     toast({
       title: "Signed out",
       description: "You have been successfully signed out.",
