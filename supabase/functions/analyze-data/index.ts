@@ -289,7 +289,7 @@ SurvBin ~ Tumor_Size_cm3 + KPS_Performance_Score +
 
 **Coefficients:** (2 not defined because of singularities)
 
-| Coefficient | Estimate | Std. Error | z value | Pr(>|z|) |
+| Coefficient | Estimate | Std. Error | z value | Pr(>\|z\|) |
 |-------------|----------|------------|---------|----------|
 | (Intercept) | -1.328e+01 | 1.684e+06 | 0 | 1 |
 | Tumor_Size_cm3 | 2.188e-10 | 4.888e+04 | 0 | 1 |
