@@ -53,6 +53,38 @@ const Dashboard = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  const loadFileContentById = async (fileId: string, fileName: string) => {
+    try {
+      setLoadingFile(true);
+      
+      const { data: fileInfo, error: fileError } = await supabase
+        .from('uploaded_files')
+        .select('file_path')
+        .eq('id', fileId)
+        .single();
+
+      if (fileError) throw fileError;
+
+      if (fileInfo) {
+        setFileName(fileName);
+
+        const { data: fileContentData, error: downloadError } = await supabase
+          .storage
+          .from('uploads')
+          .download(fileInfo.file_path);
+
+        if (!downloadError && fileContentData) {
+          const text = await fileContentData.text();
+          setFileContent(text);
+        }
+      }
+    } catch (error: any) {
+      console.error('Error loading file:', error);
+    } finally {
+      setLoadingFile(false);
+    }
+  };
+
   const loadLatestFile = async (userId: string) => {
     try {
       setLoadingFile(true);
@@ -113,11 +145,14 @@ const Dashboard = () => {
     setActiveTab("chat");
   };
 
-  const handleSessionSelected = (sessionId: string, fileId: string, fileName: string) => {
+  const handleSessionSelected = async (sessionId: string, fileId: string, fileName: string) => {
     setSelectedSessionId(sessionId);
     setSelectedFileId(fileId);
     setSelectedFileName(fileName);
     setActiveTab("chat");
+    
+    // Load the file content for the Data Dashboard
+    await loadFileContentById(fileId, fileName);
   };
 
   const handleSessionCreated = () => {
