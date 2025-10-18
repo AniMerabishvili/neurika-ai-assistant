@@ -43,9 +43,6 @@ const Dashboard = () => {
       }
       setUser(session.user);
       setLoading(false);
-      
-      // Load the most recent file for data dashboard
-      await loadLatestFile(session.user.id);
     };
 
     initAuth();
@@ -274,12 +271,13 @@ const Dashboard = () => {
                   <p className="text-muted-foreground text-center">Loading dashboard...</p>
                 </CardContent>
               </Card>
-            ) : fileContent ? (
+            ) : selectedFileId && fileContent ? (
               <DataDashboard fileContent={fileContent} fileName={fileName} />
             ) : (
               <Card>
                 <CardContent className="p-12 text-center">
-                  <p className="text-muted-foreground">No data uploaded yet. Please upload a file to view the dashboard.</p>
+                  <BarChart3 className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
+                  <p className="text-muted-foreground">No data selected. Please upload a file or select a chat from history to view the dashboard.</p>
                 </CardContent>
               </Card>
             )}
