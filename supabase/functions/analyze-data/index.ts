@@ -94,7 +94,8 @@ serve(async (req) => {
         if (matchedQA) {
           console.log('Found matching Q&A pair:', matchedQA.id);
           
-          // For predefined Q&A, always return all three sections regardless of focusedType
+          // For predefined Q&A, return content in whichever field(s) are populated
+          // Can be observation, interpretation, actionable_conclusion, or any combination
           const result = {
             content: "Complete analysis from predefined Q&A",
             observation: matchedQA.observation_content || '',
