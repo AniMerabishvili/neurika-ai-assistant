@@ -60,13 +60,17 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
   const [sessionId, setSessionId] = useState<string | null>(propSessionId || null);
   const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const sessionCreatingRef = useRef(false);
   const { toast } = useToast();
 
   useEffect(() => {
+    // Reset session creating flag when fileId changes
+    sessionCreatingRef.current = false;
+    
     if (propSessionId) {
       setSessionId(propSessionId);
       loadSessionWithFile(propSessionId);
-    } else if (fileId && !sessionId) {
+    } else if (fileId && !sessionId && !sessionCreatingRef.current) {
       createSession();
     }
   }, [fileId, propSessionId]);
@@ -132,7 +136,14 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
   };
 
   const createSession = async () => {
+    if (sessionCreatingRef.current) {
+      console.log('Session creation already in progress, skipping...');
+      return;
+    }
+
     try {
+      sessionCreatingRef.current = true;
+      
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
@@ -183,6 +194,7 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         description: error.message,
         variant: "destructive",
       });
+      sessionCreatingRef.current = false;
     }
   };
 
