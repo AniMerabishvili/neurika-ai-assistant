@@ -12,6 +12,7 @@ import ChatHistory from "@/components/ChatHistory";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"upload" | "chat" | "history">("upload");
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
@@ -28,6 +29,7 @@ const Dashboard = () => {
         return;
       }
       setUser(session.user);
+      setLoading(false);
     };
     
     checkUser();
@@ -70,7 +72,16 @@ const Dashboard = () => {
     setHistoryRefreshTrigger(prev => prev + 1);
   };
 
-  if (!user) return null;
+  if (loading || !user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
