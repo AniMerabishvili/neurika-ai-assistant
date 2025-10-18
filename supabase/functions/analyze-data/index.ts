@@ -19,7 +19,7 @@ serve(async (req) => {
       throw new Error('Question is required');
     }
 
-    // Default to all three if not specified
+    // Determine which card type to focus on
     const focusedType = cardType || 'all';
 
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
@@ -68,9 +68,8 @@ serve(async (req) => {
       (questionLower.includes('survival') && questionLower.includes('factor'))
     )) {
       console.log('Matched Q1: Glioblastoma survival analysis');
-      const result = {
-        content: "I'll analyze your brain tumor dataset to identify the key factors influencing patient survival. I'll start by loading the data, checking its quality, and then performing a comprehensive analysis focusing on tumor grade, biomarkers, and treatment types. I'll include a correlation matrix and statistical tests to determine significance.",
-        observation: `**Data Loading & Quality Check**
+      
+      const observationContent = `**Data Loading & Quality Check**
 
 ✅ Data loaded successfully. I'm working with 300 patient records and 12 clinical variables. The data quality is good with no missing values in the key columns we'll be analyzing.
 
@@ -92,8 +91,9 @@ Now, examining the correlation matrix for numerical features. We can see strong 
 **Key Correlation Insights:**
 - Tumor_Grade ↔ Tumor_Size: +0.82 (Strong Positive)
 - Tumor_Grade ↔ KPS_Score: -0.76 (Strong Negative)
-- Biomarker_1 ↔ Survival_Time: -0.68 (Moderate Negative)`,
-        interpretation: `**Statistical Testing & Group Comparisons**
+- Biomarker_1 ↔ Survival_Time: -0.68 (Moderate Negative)`;
+
+      const interpretationContent = `**Statistical Testing & Group Comparisons**
 
 To directly test survival relationships, I'm comparing tumor characteristics between survivors and non-survivors. The Mann-Whitney U test confirms that Tumor_Grade is significantly higher in deceased patients (p < 0.001).
 
@@ -103,8 +103,9 @@ Looking at treatment efficacy, patients receiving Surgery+Radio show the highest
 
 **Biomarker Analysis**
 
-Your genomic biomarkers show interesting patterns. Biomarker_1 has a strong negative correlation with survival time (-0.68), suggesting it may be a risk factor. Conversely, Biomarker_2 shows a positive correlation (+0.54), potentially indicating a protective effect.`,
-        actionable_conclusion: `**FINAL INSIGHT SUMMARY**
+Your genomic biomarkers show interesting patterns. Biomarker_1 has a strong negative correlation with survival time (-0.68), suggesting it may be a risk factor. Conversely, Biomarker_2 shows a positive correlation (+0.54), potentially indicating a protective effect.`;
+
+      const actionableContent = `**FINAL INSIGHT SUMMARY**
 
 Based on my analysis, here are the key factors most strongly associated with patient survival in your dataset:
 
@@ -119,8 +120,38 @@ Patients with scores below 60 have dramatically worse outcomes, regardless of ot
 
 🎯 **4. PROMISING BIOMARKERS:**
 - Biomarker 1: High expression correlates with poor prognosis (potential therapeutic target)
-- Biomarker 2: High expression correlates with better outcomes (potential protective factor)`
-      };
+- Biomarker 2: High expression correlates with better outcomes (potential protective factor)`;
+
+      let result;
+      if (focusedType === 'observation') {
+        result = {
+          content: "I'll analyze your brain tumor dataset to identify the key factors influencing patient survival.",
+          observation: observationContent,
+          interpretation: '',
+          actionable_conclusion: ''
+        };
+      } else if (focusedType === 'interpretation') {
+        result = {
+          content: "Analyzing statistical relationships and treatment efficacy.",
+          observation: '',
+          interpretation: interpretationContent,
+          actionable_conclusion: ''
+        };
+      } else if (focusedType === 'actionable') {
+        result = {
+          content: "Key survival factors and actionable insights.",
+          observation: '',
+          interpretation: '',
+          actionable_conclusion: actionableContent
+        };
+      } else {
+        result = {
+          content: "Complete analysis of brain tumor survival factors",
+          observation: observationContent,
+          interpretation: interpretationContent,
+          actionable_conclusion: actionableContent
+        };
+      }
       
       return new Response(JSON.stringify(result), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -134,9 +165,8 @@ Patients with scores below 60 have dramatically worse outcomes, regardless of ot
       (questionLower.includes('relationship') && questionLower.includes('biomarker'))
     )) {
       console.log('Matched Q2: Statistical correlation analysis');
-      const result = {
-        content: "Here's what I ran: loaded the brain tumor dataset, did quick EDA, correlations, and survival association tests, then tried logistic regression. I also handled a modeling hiccup by switching to a safer approach for this small dataset.",
-        observation: `**What I showed/ran just now**
+      
+      const observationContent = `**What I showed/ran just now**
 
 Head of the dataset and conversions; correlation matrix and heatmap; Wilcoxon/t-tests and Fisher/chi-squared by survival; logistic regression; then a reduced and Firth-corrected logistic model.
 
@@ -152,8 +182,9 @@ Head of the dataset and conversions; correlation matrix and heatmap; Wilcoxon/t-
 [11] "Survival_Status"                "Survival_Time_Months"          
 [13] "SurvBin"
 
-**Survival status counts (Alive vs Deceased)** so we know the class balance.`,
-        interpretation: `**The initial reduced logistic model struggled to converge** (very small N + separation): 
+**Survival status counts (Alive vs Deceased)** so we know the class balance.`;
+
+      const interpretationContent = `**The initial reduced logistic model struggled to converge** (very small N + separation): 
 Warning message: "glm.fit: algorithm did not converge"
 
 **Summary of the reduced logistic glm** (note singularities due to separation/sparse cells):
@@ -183,8 +214,9 @@ Residual deviance: 6.7879e-10  on 109  degrees of freedom
   (1 observation deleted due to missingness)
 AIC: 16
 
-**I installed logistf and its dependencies** to run a Firth logistic regression (handles separation better): also installing the dependencies 'ucminf', 'ordinal', 'pan', 'jomo', 'mitml', 'operator.tools', 'mice', 'formula.tools'`,
-        actionable_conclusion: `**What this means (brief)**
+**I installed logistf and its dependencies** to run a Firth logistic regression (handles separation better): also installing the dependencies 'ucminf', 'ordinal', 'pan', 'jomo', 'mitml', 'operator.tools', 'mice', 'formula.tools'`;
+
+      const actionableContent = `**What this means (brief)**
 
 - The dataset loads fine and has a reasonable mix of clinical, genomic, and survival variables.
 - Logistic regression shows clear signs of quasi-complete separation and sparse categories for some factor levels (tiny sample with multiple predictors). That's why the standard glm didn't converge and why the Wald CIs explode.
@@ -194,8 +226,38 @@ AIC: 16
 
 - Show the head again and a couple of quick plots (e.g., tumor size and KPS by survival).
 - Print the full correlation heatmap and highlight any notable relationships.
-- Summarize the Firth model outputs cleanly and visualize any significant predictors.`
-      };
+- Summarize the Firth model outputs cleanly and visualize any significant predictors.`;
+
+      let result;
+      if (focusedType === 'observation') {
+        result = {
+          content: "Loading and analyzing dataset structure.",
+          observation: observationContent,
+          interpretation: '',
+          actionable_conclusion: ''
+        };
+      } else if (focusedType === 'interpretation') {
+        result = {
+          content: "Statistical modeling and regression analysis.",
+          observation: '',
+          interpretation: interpretationContent,
+          actionable_conclusion: ''
+        };
+      } else if (focusedType === 'actionable') {
+        result = {
+          content: "Summary and next steps.",
+          observation: '',
+          interpretation: '',
+          actionable_conclusion: actionableContent
+        };
+      } else {
+        result = {
+          content: "Here's what I ran: loaded the brain tumor dataset, did quick EDA, correlations, and survival association tests, then tried logistic regression.",
+          observation: observationContent,
+          interpretation: interpretationContent,
+          actionable_conclusion: actionableContent
+        };
+      }
       
       return new Response(JSON.stringify(result), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
