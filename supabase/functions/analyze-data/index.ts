@@ -67,7 +67,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `You are Neureka.ai, an AI Data Analyst. Analyze the given dataset and user question. 
+            content: `You are Neurika.ai, an AI Data Analyst. Analyze the given dataset and user question. 
 Return your response as a JSON object with exactly these fields:
 {
   "observation": "Clear, factual summary of what the data shows",

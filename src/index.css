@@ -38,7 +38,7 @@ All colors MUST be HSL.
 
     --radius: 0.75rem;
 
-    /* Neureka specific tokens */
+    /* Neurika specific tokens */
     --gradient-primary: linear-gradient(135deg, hsl(230 60% 55%), hsl(280 50% 60%));
     --gradient-card: linear-gradient(to bottom right, hsl(0 0% 100%), hsl(220 30% 98%));
     --shadow-card: 0 4px 20px -2px hsl(230 60% 55% / 0.1);
