@@ -2,10 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Send, Loader2, Eye, Brain, Target, FileSpreadsheet } from "lucide-react";
 import ReasoningCard from "@/components/ReasoningCard";
+import DataDashboard from "@/components/DataDashboard";
 
 interface ChatInterfaceProps {
   fileId: string | null;
@@ -35,6 +36,8 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(propSessionId || null);
   const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null);
+  const [fileContent, setFileContent] = useState<string>("");
+  const [loadingFile, setLoadingFile] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -53,13 +56,15 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
 
   const loadSessionWithFile = async (sessionId: string) => {
     try {
+      setLoadingFile(true);
+      
       // Load session info with file details
       const { data: sessionData, error: sessionError } = await supabase
         .from('chat_sessions')
         .select(`
           id,
           file_id,
-          uploaded_files!chat_sessions_file_id_fkey(id, file_name)
+          uploaded_files!chat_sessions_file_id_fkey(id, file_name, file_path)
         `)
         .eq('id', sessionId)
         .single();
@@ -67,12 +72,25 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
       if (sessionError) throw sessionError;
 
       if (sessionData && sessionData.uploaded_files) {
-        setSessionInfo({
+        const fileInfo = {
           sessionId: sessionData.id,
           fileId: sessionData.file_id!,
           fileName: sessionData.uploaded_files.file_name,
-        });
+        };
+        setSessionInfo(fileInfo);
         console.log('Loaded session info:', sessionData);
+
+        // Download file content for dashboard
+        const { data: fileContentData, error: downloadError } = await supabase
+          .storage
+          .from('uploads')
+          .download(sessionData.uploaded_files.file_path);
+
+        if (!downloadError && fileContentData) {
+          const text = await fileContentData.text();
+          setFileContent(text);
+          console.log('Loaded file content, length:', text.length);
+        }
       }
 
       // Load messages
@@ -103,6 +121,37 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         description: error.message,
         variant: "destructive",
       });
+    } finally {
+      setLoadingFile(false);
+    }
+  };
+
+  const loadFileContent = async (fileId: string) => {
+    try {
+      setLoadingFile(true);
+      
+      const { data: fileData, error: fileError } = await supabase
+        .from('uploaded_files')
+        .select('file_path')
+        .eq('id', fileId)
+        .single();
+
+      if (fileError || !fileData) return;
+
+      const { data: fileContentData, error: downloadError } = await supabase
+        .storage
+        .from('uploads')
+        .download(fileData.file_path);
+
+      if (!downloadError && fileContentData) {
+        const text = await fileContentData.text();
+        setFileContent(text);
+        console.log('Loaded file content for new session, length:', text.length);
+      }
+    } catch (error: any) {
+      console.error('Error loading file content:', error);
+    } finally {
+      setLoadingFile(false);
     }
   };
 
@@ -133,13 +182,17 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
       console.log('Session created:', data);
       setSessionId(data.id);
       
-      // Set session info
+      // Set session info and load file content
       if (fileId && fileName) {
-        setSessionInfo({
+        const info = {
           sessionId: data.id,
           fileId: fileId,
           fileName: fileName,
-        });
+        };
+        setSessionInfo(info);
+        
+        // Load file content for new session
+        await loadFileContent(fileId);
       }
       
       if (onSessionCreated) {
@@ -243,7 +296,20 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-7xl mx-auto">
+      {/* Data Dashboard */}
+      {fileContent && sessionInfo && !loadingFile && (
+        <DataDashboard fileContent={fileContent} fileName={sessionInfo.fileName} />
+      )}
+      
+      {loadingFile && (
+        <Card className="mb-6">
+          <CardContent className="p-6">
+            <p className="text-muted-foreground text-center">Loading dashboard...</p>
+          </CardContent>
+        </Card>
+      )}
+      
       <Card className="shadow-lg">
         <div className="h-[600px] flex flex-col">
           {/* File Info Header */}
