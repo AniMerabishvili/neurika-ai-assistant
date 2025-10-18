@@ -124,95 +124,93 @@ const DataDashboard = ({ fileContent, fileName }: DataDashboardProps) => {
   }
 
   return (
-    <div className="space-y-4 mb-6">
+    <div className="space-y-4 mb-6 max-w-full overflow-hidden">
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Database className="w-4 h-4 text-primary" />
+          <CardHeader className="pb-2 sm:pb-3">
+            <CardTitle className="text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2">
+              <Database className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
               Total Rows
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalRows.toLocaleString()}</div>
+          <CardContent className="pb-3 sm:pb-4">
+            <div className="text-xl sm:text-2xl font-bold">{stats.totalRows.toLocaleString()}</div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Hash className="w-4 h-4 text-primary" />
+          <CardHeader className="pb-2 sm:pb-3">
+            <CardTitle className="text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2">
+              <Hash className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
               Columns
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalColumns}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              {stats.numericColumns.length} numeric, {stats.categoricalColumns.length} categorical
+          <CardContent className="pb-3 sm:pb-4">
+            <div className="text-xl sm:text-2xl font-bold">{stats.totalColumns}</div>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 truncate">
+              {stats.numericColumns.length} numeric
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-primary" />
-              Numeric Fields
+          <CardHeader className="pb-2 sm:pb-3">
+            <CardTitle className="text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2">
+              <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+              Numeric
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.numericColumns.length}</div>
-            <p className="text-xs text-muted-foreground mt-1 truncate">
-              {stats.numericColumns.slice(0, 2).join(', ')}
-              {stats.numericColumns.length > 2 && '...'}
+          <CardContent className="pb-3 sm:pb-4">
+            <div className="text-xl sm:text-2xl font-bold">{stats.numericColumns.length}</div>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 truncate">
+              {stats.numericColumns.slice(0, 1).join(', ')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-primary" />
+          <CardHeader className="pb-2 sm:pb-3">
+            <CardTitle className="text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2">
+              <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
               Categories
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.categoricalColumns.length}</div>
-            <p className="text-xs text-muted-foreground mt-1 truncate">
-              {stats.categoricalColumns.slice(0, 2).join(', ')}
-              {stats.categoricalColumns.length > 2 && '...'}
+          <CardContent className="pb-3 sm:pb-4">
+            <div className="text-xl sm:text-2xl font-bold">{stats.categoricalColumns.length}</div>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 truncate">
+              {stats.categoricalColumns.slice(0, 1).join(', ')}
             </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Data Preview and Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
         {/* Sample Data */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
+            <CardTitle className="text-sm sm:text-base flex items-center gap-2">
               <FileText className="w-4 h-4" />
               Data Preview
             </CardTitle>
-            <CardDescription>First 5 rows of {fileName}</CardDescription>
+            <CardDescription className="text-xs sm:text-sm">First 5 rows of {fileName}</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs">
+          <CardContent className="overflow-hidden">
+            <div className="overflow-x-auto -mx-2 sm:mx-0">
+              <table className="w-full text-xs min-w-full">
                 <thead>
                   <tr className="border-b">
-                    {stats.columns.slice(0, 4).map(col => (
-                      <th key={col} className="text-left p-2 font-medium">{col}</th>
+                    {stats.columns.slice(0, 3).map(col => (
+                      <th key={col} className="text-left p-2 font-medium whitespace-nowrap">{col}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {stats.sampleData.map((row, idx) => (
                     <tr key={idx} className="border-b">
-                      {stats.columns.slice(0, 4).map(col => (
-                        <td key={col} className="p-2 truncate max-w-[100px]">
+                      {stats.columns.slice(0, 3).map(col => (
+                        <td key={col} className="p-2 truncate max-w-[80px] sm:max-w-[100px]">
                           {row[col]}
                         </td>
                       ))}
@@ -228,11 +226,11 @@ const DataDashboard = ({ fileContent, fileName }: DataDashboardProps) => {
         {stats.categoricalColumns.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Distribution</CardTitle>
-              <CardDescription>Top values in {stats.categoricalColumns[0]}</CardDescription>
+              <CardTitle className="text-sm sm:text-base">Distribution</CardTitle>
+              <CardDescription className="text-xs sm:text-sm truncate">Top values in {stats.categoricalColumns[0]}</CardDescription>
             </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={200}>
+            <CardContent className="overflow-hidden">
+              <ResponsiveContainer width="100%" height={180}>
                 <PieChart>
                   <Pie
                     data={stats.columnStats[stats.categoricalColumns[0]]?.topValues || []}
@@ -240,7 +238,7 @@ const DataDashboard = ({ fileContent, fileName }: DataDashboardProps) => {
                     cy="50%"
                     labelLine={false}
                     label={(entry) => entry.value}
-                    outerRadius={80}
+                    outerRadius={60}
                     fill="hsl(var(--primary))"
                     dataKey="count"
                     nameKey="value"
@@ -250,7 +248,7 @@ const DataDashboard = ({ fileContent, fileName }: DataDashboardProps) => {
                     ))}
                   </Pie>
                   <Tooltip />
-                  <Legend />
+                  <Legend wrapperStyle={{ fontSize: '10px' }} />
                 </PieChart>
               </ResponsiveContainer>
             </CardContent>
@@ -261,28 +259,28 @@ const DataDashboard = ({ fileContent, fileName }: DataDashboardProps) => {
         {stats.numericColumns.length > 0 && (
           <Card className="lg:col-span-2">
             <CardHeader>
-              <CardTitle className="text-base">Numeric Summary</CardTitle>
-              <CardDescription>Statistical overview of numeric columns</CardDescription>
+              <CardTitle className="text-sm sm:text-base">Numeric Summary</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">Statistical overview of numeric columns</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <CardContent className="overflow-hidden">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                 {stats.numericColumns.slice(0, 4).map(col => {
                   const colStats = stats.columnStats[col];
                   return (
-                    <div key={col} className="border rounded-lg p-3">
-                      <p className="text-sm font-medium truncate mb-2">{col}</p>
-                      <div className="space-y-1 text-xs">
-                        <div className="flex justify-between">
+                    <div key={col} className="border rounded-lg p-2 sm:p-3">
+                      <p className="text-xs sm:text-sm font-medium truncate mb-1 sm:mb-2">{col}</p>
+                      <div className="space-y-1 text-[10px] sm:text-xs">
+                        <div className="flex justify-between gap-1">
                           <span className="text-muted-foreground">Min:</span>
-                          <span className="font-medium">{colStats.min?.toFixed(2)}</span>
+                          <span className="font-medium truncate">{colStats.min?.toFixed(2)}</span>
                         </div>
-                        <div className="flex justify-between">
+                        <div className="flex justify-between gap-1">
                           <span className="text-muted-foreground">Max:</span>
-                          <span className="font-medium">{colStats.max?.toFixed(2)}</span>
+                          <span className="font-medium truncate">{colStats.max?.toFixed(2)}</span>
                         </div>
-                        <div className="flex justify-between">
+                        <div className="flex justify-between gap-1">
                           <span className="text-muted-foreground">Avg:</span>
-                          <span className="font-medium">{colStats.avg?.toFixed(2)}</span>
+                          <span className="font-medium truncate">{colStats.avg?.toFixed(2)}</span>
                         </div>
                       </div>
                     </div>

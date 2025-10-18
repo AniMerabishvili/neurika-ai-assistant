@@ -173,84 +173,84 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary">
-              <MessageSquare className="w-6 h-6 text-primary-foreground" />
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-primary flex-shrink-0">
+              <MessageSquare className="w-4 h-4 sm:w-6 sm:h-6 text-primary-foreground" />
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-primary">
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-2xl font-bold text-primary truncate">
                 Neurika.ai
               </h1>
-              <p className="text-xs text-muted-foreground">AI Data Assistant</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">AI Data Assistant</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">{user.email}</span>
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+            <span className="text-xs sm:text-sm text-muted-foreground hidden md:block truncate max-w-[150px]">{user.email}</span>
             <ThemeToggle />
-            <Button variant="outline" size="sm" onClick={handleSignOut}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
+            <Button variant="outline" size="sm" onClick={handleSignOut} className="text-xs sm:text-sm">
+              <LogOut className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Sign Out</span>
             </Button>
           </div>
         </div>
       </header>
 
       {/* Navigation Tabs */}
-      <div className="border-b bg-card">
-        <div className="container mx-auto px-4">
-          <div className="flex gap-1">
+      <div className="border-b bg-card overflow-x-auto">
+        <div className="container mx-auto px-2 sm:px-4">
+          <div className="flex gap-1 min-w-max">
             <button
               onClick={() => setActiveTab("upload")}
-              className={`flex items-center gap-2 px-6 py-3 border-b-2 transition-colors ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 border-b-2 transition-colors whitespace-nowrap text-xs sm:text-sm ${
                 activeTab === "upload"
                   ? "border-primary text-primary font-medium"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Upload className="w-4 h-4" />
-              Upload Data
+              <Upload className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Upload</span>
             </button>
             <button
               onClick={() => setActiveTab("chat")}
-              className={`flex items-center gap-2 px-6 py-3 border-b-2 transition-colors ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 border-b-2 transition-colors whitespace-nowrap text-xs sm:text-sm ${
                 activeTab === "chat"
                   ? "border-primary text-primary font-medium"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
-              <MessageSquare className="w-4 h-4" />
-              Chat
+              <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Chat</span>
             </button>
             <button
               onClick={() => setActiveTab("history")}
-              className={`flex items-center gap-2 px-6 py-3 border-b-2 transition-colors ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 border-b-2 transition-colors whitespace-nowrap text-xs sm:text-sm ${
                 activeTab === "history"
                   ? "border-primary text-primary font-medium"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
-              <History className="w-4 h-4" />
-              History
+              <History className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>History</span>
             </button>
             <button
               onClick={() => setActiveTab("dataDashboard")}
-              className={`flex items-center gap-2 px-6 py-3 border-b-2 transition-colors ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 border-b-2 transition-colors whitespace-nowrap text-xs sm:text-sm ${
                 activeTab === "dataDashboard"
                   ? "border-primary text-primary font-medium"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
-              <BarChart3 className="w-4 h-4" />
-              Data Dashboard
+              <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Dashboard</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {activeTab === "upload" && <FileUpload onFileUploaded={handleFileUploaded} />}
         {activeTab === "chat" && (
           <ChatInterface 
