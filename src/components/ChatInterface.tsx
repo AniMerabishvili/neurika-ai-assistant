@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Send, Loader2, Eye, Brain, Target } from "lucide-react";
+import { Send, Loader2, Eye, Brain, Target, FileSpreadsheet } from "lucide-react";
 import ReasoningCard from "@/components/ReasoningCard";
 
 interface ChatInterfaceProps {
@@ -23,18 +23,25 @@ interface Message {
   actionable_conclusion?: string;
 }
 
+interface SessionInfo {
+  sessionId: string;
+  fileId: string;
+  fileName: string;
+}
+
 const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCreated }: ChatInterfaceProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(propSessionId || null);
+  const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     if (propSessionId) {
       setSessionId(propSessionId);
-      loadSessionMessages(propSessionId);
+      loadSessionWithFile(propSessionId);
     } else if (fileId && !sessionId) {
       createSession();
     }
@@ -44,18 +51,41 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const loadSessionMessages = async (sessionId: string) => {
+  const loadSessionWithFile = async (sessionId: string) => {
     try {
-      const { data, error } = await supabase
+      // Load session info with file details
+      const { data: sessionData, error: sessionError } = await supabase
+        .from('chat_sessions')
+        .select(`
+          id,
+          file_id,
+          uploaded_files!chat_sessions_file_id_fkey(id, file_name)
+        `)
+        .eq('id', sessionId)
+        .single();
+
+      if (sessionError) throw sessionError;
+
+      if (sessionData && sessionData.uploaded_files) {
+        setSessionInfo({
+          sessionId: sessionData.id,
+          fileId: sessionData.file_id!,
+          fileName: sessionData.uploaded_files.file_name,
+        });
+        console.log('Loaded session info:', sessionData);
+      }
+
+      // Load messages
+      const { data: messagesData, error: messagesError } = await supabase
         .from('chat_messages')
         .select('*')
         .eq('session_id', sessionId)
         .order('created_at', { ascending: true });
 
-      if (error) throw error;
+      if (messagesError) throw messagesError;
 
-      if (data) {
-        const formattedMessages: Message[] = data.map(msg => ({
+      if (messagesData) {
+        const formattedMessages: Message[] = messagesData.map(msg => ({
           id: msg.id,
           role: msg.role as "user" | "assistant",
           content: msg.content,
@@ -64,10 +94,12 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
           actionable_conclusion: msg.actionable_conclusion || undefined,
         }));
         setMessages(formattedMessages);
+        console.log('Loaded messages:', formattedMessages.length);
       }
     } catch (error: any) {
+      console.error('Error loading session:', error);
       toast({
-        title: "Error loading messages",
+        title: "Error loading session",
         description: error.message,
         variant: "destructive",
       });
@@ -100,6 +132,15 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
 
       console.log('Session created:', data);
       setSessionId(data.id);
+      
+      // Set session info
+      if (fileId && fileName) {
+        setSessionInfo({
+          sessionId: data.id,
+          fileId: fileId,
+          fileName: fileName,
+        });
+      }
       
       if (onSessionCreated) {
         onSessionCreated(data.id);
@@ -145,10 +186,13 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
       });
 
       // Call AI analysis
+      const currentFileId = sessionInfo?.fileId || fileId;
+      console.log('Calling AI with fileId:', currentFileId);
+      
       const { data, error } = await supabase.functions.invoke('analyze-data', {
         body: {
           question: input,
-          fileId,
+          fileId: currentFileId,
           sessionId,
         },
       });
@@ -202,12 +246,28 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
     <div className="max-w-4xl mx-auto">
       <Card className="shadow-lg">
         <div className="h-[600px] flex flex-col">
+          {/* File Info Header */}
+          {sessionInfo && (
+            <div className="border-b bg-muted/30 px-6 py-3">
+              <div className="flex items-center gap-2 text-sm">
+                <FileSpreadsheet className="w-4 h-4 text-primary" />
+                <span className="font-medium">Analyzing:</span>
+                <span className="text-muted-foreground">{sessionInfo.fileName}</span>
+              </div>
+            </div>
+          )}
+          
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {messages.length === 0 && (
               <div className="text-center text-muted-foreground py-12">
                 <Brain className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>Ask me anything about your data!</p>
+                {sessionInfo && (
+                  <p className="text-sm mt-2">
+                    All questions will be analyzed using: <span className="font-medium">{sessionInfo.fileName}</span>
+                  </p>
+                )}
               </div>
             )}
             
