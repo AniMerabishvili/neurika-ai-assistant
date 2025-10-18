@@ -374,34 +374,28 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
                     </div>
                   </div>
                 ) : (
-                  <div className="flex flex-col md:flex-row gap-4">
-                    <div className={message.relevantCard === "observation" ? "md:flex-[2]" : "md:flex-[1]"}>
-                      <ReasoningCard
-                        icon={<Eye className="w-5 h-5" />}
-                        title="Observation"
-                        content={message.observation || "No observation available"}
-                        color="observation"
-                        isOpen={message.relevantCard === "observation"}
-                      />
-                    </div>
-                    <div className={message.relevantCard === "interpretation" ? "md:flex-[2]" : "md:flex-[1]"}>
-                      <ReasoningCard
-                        icon={<Brain className="w-5 h-5" />}
-                        title="Interpretation"
-                        content={message.interpretation || "No interpretation available"}
-                        color="interpretation"
-                        isOpen={message.relevantCard === "interpretation"}
-                      />
-                    </div>
-                    <div className={message.relevantCard === "actionable" ? "md:flex-[2]" : "md:flex-[1]"}>
-                      <ReasoningCard
-                        icon={<Target className="w-5 h-5" />}
-                        title="Actionable Conclusion"
-                        content={message.actionable_conclusion || "No actionable conclusion available"}
-                        color="actionable"
-                        isOpen={message.relevantCard === "actionable"}
-                      />
-                    </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <ReasoningCard
+                      icon={<Eye className="w-5 h-5" />}
+                      title="Observation"
+                      content={message.observation || "No observation available"}
+                      color="observation"
+                      isOpen={message.relevantCard === "observation"}
+                    />
+                    <ReasoningCard
+                      icon={<Brain className="w-5 h-5" />}
+                      title="Interpretation"
+                      content={message.interpretation || "No interpretation available"}
+                      color="interpretation"
+                      isOpen={message.relevantCard === "interpretation"}
+                    />
+                    <ReasoningCard
+                      icon={<Target className="w-5 h-5" />}
+                      title="Actionable Conclusion"
+                      content={message.actionable_conclusion || "No actionable conclusion available"}
+                      color="actionable"
+                      isOpen={message.relevantCard === "actionable"}
+                    />
                   </div>
                 )}
               </div>
