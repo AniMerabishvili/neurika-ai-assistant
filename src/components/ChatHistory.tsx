@@ -49,6 +49,7 @@ const ChatHistory = ({ onSessionSelect, refreshTrigger }: ChatHistoryProps) => {
   const [newTitle, setNewTitle] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkDeleteDialogOpen, setBulkDeleteDialogOpen] = useState(false);
+  const [selectionMode, setSelectionMode] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -132,7 +133,7 @@ const ChatHistory = ({ onSessionSelect, refreshTrigger }: ChatHistoryProps) => {
   }
 
   const handleSessionClick = (session: Session) => {
-    if (selectedIds.size > 0) return; // Prevent navigation when in selection mode
+    if (selectionMode) return; // Prevent navigation when in selection mode
     if (onSessionSelect && session.file_id && session.file_name) {
       onSessionSelect(session.id, session.file_id, session.file_name);
     }
@@ -171,6 +172,16 @@ const ChatHistory = ({ onSessionSelect, refreshTrigger }: ChatHistoryProps) => {
 
   const handleBulkDeleteClick = () => {
     setBulkDeleteDialogOpen(true);
+  };
+
+  const enterSelectionMode = () => {
+    setSelectionMode(true);
+    setSelectedIds(new Set());
+  };
+
+  const exitSelectionMode = () => {
+    setSelectionMode(false);
+    setSelectedIds(new Set());
   };
 
   const confirmDelete = async () => {
@@ -264,26 +275,43 @@ const ChatHistory = ({ onSessionSelect, refreshTrigger }: ChatHistoryProps) => {
     <>
       <div className="max-w-4xl mx-auto space-y-4">
         {sessions.length > 0 && (
-          <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-            <div className="flex items-center gap-2">
-              <Checkbox
-                checked={selectedIds.size === sessions.length && sessions.length > 0}
-                onCheckedChange={toggleSelectAll}
-                id="select-all"
-              />
-              <label htmlFor="select-all" className="text-sm font-medium cursor-pointer">
-                Select All ({selectedIds.size}/{sessions.length})
-              </label>
-            </div>
-            {selectedIds.size > 0 && (
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={handleBulkDeleteClick}
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete Selected ({selectedIds.size})
+          <div className="flex items-center justify-between">
+            {!selectionMode ? (
+              <Button onClick={enterSelectionMode} variant="outline">
+                Select Multiple
               </Button>
+            ) : (
+              <div className="flex items-center justify-between w-full p-4 bg-muted/50 rounded-lg">
+                <div className="flex items-center gap-4">
+                  <Checkbox
+                    checked={selectedIds.size === sessions.length && sessions.length > 0}
+                    onCheckedChange={toggleSelectAll}
+                    id="select-all"
+                  />
+                  <label htmlFor="select-all" className="text-sm font-medium cursor-pointer">
+                    Select All ({selectedIds.size}/{sessions.length})
+                  </label>
+                </div>
+                <div className="flex items-center gap-2">
+                  {selectedIds.size > 0 && (
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={handleBulkDeleteClick}
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete ({selectedIds.size})
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={exitSelectionMode}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
             )}
           </div>
         )}
@@ -291,19 +319,21 @@ const ChatHistory = ({ onSessionSelect, refreshTrigger }: ChatHistoryProps) => {
         {sessions.map((session) => (
           <Card 
             key={session.id} 
-            className={`hover:shadow-md transition-shadow cursor-pointer group ${
-              selectedIds.has(session.id) ? 'ring-2 ring-primary' : ''
-            }`}
+            className={`hover:shadow-md transition-shadow group ${
+              selectionMode ? '' : 'cursor-pointer'
+            } ${selectedIds.has(session.id) ? 'ring-2 ring-primary' : ''}`}
             onClick={() => handleSessionClick(session)}
           >
             <CardHeader>
               <div className="flex items-start gap-4">
-                <Checkbox
-                  checked={selectedIds.has(session.id)}
-                  onCheckedChange={() => toggleSelect(session.id)}
-                  onClick={(e) => e.stopPropagation()}
-                  className="mt-1"
-                />
+                {selectionMode && (
+                  <Checkbox
+                    checked={selectedIds.has(session.id)}
+                    onCheckedChange={() => toggleSelect(session.id)}
+                    onClick={(e) => e.stopPropagation()}
+                    className="mt-1"
+                  />
+                )}
                 <div className="flex-1 flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <CardTitle className="text-lg">{session.title}</CardTitle>
@@ -318,24 +348,26 @@ const ChatHistory = ({ onSessionSelect, refreshTrigger }: ChatHistoryProps) => {
                       </span>
                     </CardDescription>
                   </div>
-                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={(e) => handleRenameClick(e, session)}
-                      className="h-8 w-8"
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={(e) => handleDeleteClick(e, session)}
-                      className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
+                  {!selectionMode && (
+                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => handleRenameClick(e, session)}
+                        className="h-8 w-8"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => handleDeleteClick(e, session)}
+                        className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </CardHeader>
