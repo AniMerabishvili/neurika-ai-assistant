@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { Resend } from "npm:resend@2.0.0";
+import { Resend } from "https://esm.sh/resend@2.0.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -106,14 +106,8 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    // Get inviter's profile
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("email")
-      .eq("id", user.id)
-      .single();
-
-    const inviterEmail = profile?.email || "team@neurika.ai";
+    // Get inviter's email from user object
+    const inviterEmail = user.email || "team@neurika.ai";
     const invitationLink = `${req.headers.get("origin")}/auth?invite=${token}`;
 
     // Send invitation email via Resend
