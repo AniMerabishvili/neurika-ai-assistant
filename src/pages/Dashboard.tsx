@@ -135,7 +135,7 @@ const Dashboard = () => {
       title: "Signed out",
       description: "You have been successfully signed out.",
     });
-    navigate("/auth");
+    navigate("/");
   };
 
   const handleFileUploaded = (fileId: string, fileName: string) => {
