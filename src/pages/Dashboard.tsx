@@ -9,7 +9,8 @@ import ThemeToggle from "@/components/ThemeToggle";
 import FileUpload from "@/components/FileUpload";
 import ChatInterface from "@/components/ChatInterface";
 import ChatHistory from "@/components/ChatHistory";
-import QAManagement from "@/components/QAManagement";
+// Temporarily commented out to debug
+// import QAManagement from "@/components/QAManagement";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -203,7 +204,11 @@ const Dashboard = () => {
             refreshTrigger={historyRefreshTrigger}
           />
         )}
-        {activeTab === "qa" && <QAManagement />}
+        {activeTab === "qa" && (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Q&A Management - Coming soon</p>
+          </div>
+        )}
       </div>
     </div>
   );
