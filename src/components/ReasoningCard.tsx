@@ -1,14 +1,18 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { ReactNode } from "react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ReactNode, useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 interface ReasoningCardProps {
   icon: ReactNode;
   title: string;
   content: string;
   color: "observation" | "interpretation" | "actionable";
+  isOpen?: boolean;
 }
 
-const ReasoningCard = ({ icon, title, content, color }: ReasoningCardProps) => {
+const ReasoningCard = ({ icon, title, content, color, isOpen = false }: ReasoningCardProps) => {
+  const [open, setOpen] = useState(isOpen);
   const colorClasses = {
     observation: "border-l-4 border-l-[hsl(var(--observation))] bg-[hsl(var(--observation)/0.05)]",
     interpretation: "border-l-4 border-l-[hsl(var(--interpretation))] bg-[hsl(var(--interpretation)/0.05)]",
@@ -16,19 +20,29 @@ const ReasoningCard = ({ icon, title, content, color }: ReasoningCardProps) => {
   };
 
   return (
-    <Card className={`${colorClasses[color]} shadow-md transition-all hover:shadow-lg`}>
-      <CardContent className="p-4">
-        <div className="flex items-start gap-3">
-          <div className="mt-1">{icon}</div>
-          <div className="flex-1 space-y-2">
-            <h3 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">
-              {title}
-            </h3>
-            <p className="text-foreground leading-relaxed">{content}</p>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <Card className={`${colorClasses[color]} shadow-md transition-all hover:shadow-lg`}>
+        <CardContent className="p-4">
+          <CollapsibleTrigger className="w-full">
+            <div className="flex items-center justify-between gap-3 cursor-pointer">
+              <div className="flex items-center gap-3">
+                <div>{icon}</div>
+                <h3 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">
+                  {title}
+                </h3>
+              </div>
+              <ChevronDown className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`} />
+            </div>
+          </CollapsibleTrigger>
+          
+          <CollapsibleContent>
+            <div className="mt-3 pt-3 border-t">
+              <p className="text-foreground leading-relaxed">{content}</p>
+            </div>
+          </CollapsibleContent>
+        </CardContent>
+      </Card>
+    </Collapsible>
   );
 };
 
