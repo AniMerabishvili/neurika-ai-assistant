@@ -8,29 +8,6 @@ import { Send, Loader2, Eye, Brain, Target, FileSpreadsheet } from "lucide-react
 import ReasoningCard from "@/components/ReasoningCard";
 import DataDashboard from "@/components/DataDashboard";
 
-const determineRelevantCard = (question: string): "observation" | "interpretation" | "actionable" => {
-  const lowerQ = question.toLowerCase();
-  
-  // Keywords for actionable conclusions (business/strategic questions)
-  const actionableKeywords = ['should', 'recommend', 'suggest', 'best', 'strategy', 'increase', 'improve', 'optimize', 'maximize', 'business', 'profit', 'sales', 'grow', 'invest'];
-  
-  // Keywords for interpretation (analytical/comparative questions)
-  const interpretationKeywords = ['why', 'compare', 'relationship', 'correlation', 'trend', 'pattern', 'difference', 'affect', 'impact', 'meaning', 'significant'];
-  
-  // Check for actionable keywords
-  if (actionableKeywords.some(keyword => lowerQ.includes(keyword))) {
-    return "actionable";
-  }
-  
-  // Check for interpretation keywords
-  if (interpretationKeywords.some(keyword => lowerQ.includes(keyword))) {
-    return "interpretation";
-  }
-  
-  // Default to observation for factual/descriptive questions (what, which, when, how many)
-  return "observation";
-};
-
 interface ChatInterfaceProps {
   fileId: string | null;
   fileName?: string;
@@ -45,7 +22,6 @@ interface Message {
   observation?: string;
   interpretation?: string;
   actionable_conclusion?: string;
-  relevantCard?: "observation" | "interpretation" | "actionable";
 }
 
 interface SessionInfo {
@@ -240,13 +216,10 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
   const handleSend = async () => {
     if (!input.trim() || !sessionId) return;
 
-    const questionText = input;
-    const relevantCard = determineRelevantCard(questionText);
-
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
-      content: questionText,
+      content: input,
     };
 
     setMessages(prev => [...prev, userMessage]);
@@ -286,7 +259,6 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         observation: data.observation,
         interpretation: data.interpretation,
         actionable_conclusion: data.actionable_conclusion,
-        relevantCard: relevantCard,
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -374,28 +346,31 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
                     </div>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ReasoningCard
-                      icon={<Eye className="w-5 h-5" />}
-                      title="Observation"
-                      content={message.observation || "No observation available"}
-                      color="observation"
-                      isOpen={message.relevantCard === "observation"}
-                    />
-                    <ReasoningCard
-                      icon={<Brain className="w-5 h-5" />}
-                      title="Interpretation"
-                      content={message.interpretation || "No interpretation available"}
-                      color="interpretation"
-                      isOpen={message.relevantCard === "interpretation"}
-                    />
-                    <ReasoningCard
-                      icon={<Target className="w-5 h-5" />}
-                      title="Actionable Conclusion"
-                      content={message.actionable_conclusion || "No actionable conclusion available"}
-                      color="actionable"
-                      isOpen={message.relevantCard === "actionable"}
-                    />
+                  <div className="space-y-4">
+                    {message.observation && (
+                      <ReasoningCard
+                        icon={<Eye className="w-5 h-5" />}
+                        title="Observation"
+                        content={message.observation}
+                        color="observation"
+                      />
+                    )}
+                    {message.interpretation && (
+                      <ReasoningCard
+                        icon={<Brain className="w-5 h-5" />}
+                        title="Interpretation"
+                        content={message.interpretation}
+                        color="interpretation"
+                      />
+                    )}
+                    {message.actionable_conclusion && (
+                      <ReasoningCard
+                        icon={<Target className="w-5 h-5" />}
+                        title="Actionable Conclusion"
+                        content={message.actionable_conclusion}
+                        color="actionable"
+                      />
+                    )}
                   </div>
                 )}
               </div>
