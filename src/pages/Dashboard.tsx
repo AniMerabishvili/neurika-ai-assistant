@@ -3,21 +3,26 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
-import { LogOut, Upload, MessageSquare, History, BookOpen, LayoutDashboard } from "lucide-react";
+import { LogOut, Upload, MessageSquare, History, BookOpen, BarChart3 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ThemeToggle from "@/components/ThemeToggle";
 import FileUpload from "@/components/FileUpload";
 import ChatInterface from "@/components/ChatInterface";
 import ChatHistory from "@/components/ChatHistory";
+import DataDashboard from "@/components/DataDashboard";
+import { Card, CardContent } from "@/components/ui/card";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"upload" | "chat" | "history" | "qa">("upload");
+  const [activeTab, setActiveTab] = useState<"upload" | "chat" | "history" | "qa" | "dataDashboard">("upload");
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [historyRefreshTrigger, setHistoryRefreshTrigger] = useState(0);
+  const [fileContent, setFileContent] = useState<string>("");
+  const [fileName, setFileName] = useState<string>("");
+  const [loadingFile, setLoadingFile] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -38,12 +43,53 @@ const Dashboard = () => {
       }
       setUser(session.user);
       setLoading(false);
+      
+      // Load the most recent file for data dashboard
+      await loadLatestFile(session.user.id);
     };
 
     initAuth();
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const loadLatestFile = async (userId: string) => {
+    try {
+      setLoadingFile(true);
+      
+      const { data: sessions, error: sessionsError } = await supabase
+        .from('chat_sessions')
+        .select(`
+          id,
+          file_id,
+          uploaded_files!chat_sessions_file_id_fkey(id, file_name, file_path)
+        `)
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (sessionsError) throw sessionsError;
+
+      if (sessions && sessions.length > 0 && sessions[0].uploaded_files) {
+        const fileInfo = sessions[0].uploaded_files;
+        setFileName(fileInfo.file_name);
+
+        const { data: fileContentData, error: downloadError } = await supabase
+          .storage
+          .from('uploads')
+          .download(fileInfo.file_path);
+
+        if (!downloadError && fileContentData) {
+          const text = await fileContentData.text();
+          setFileContent(text);
+        }
+      }
+    } catch (error: any) {
+      console.error('Error loading file:', error);
+    } finally {
+      setLoadingFile(false);
+    }
+  };
 
   const handleSignOut = async () => {
     try {
@@ -106,10 +152,6 @@ const Dashboard = () => {
           </div>
           
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => navigate("/data-overview")}>
-              <LayoutDashboard className="w-4 h-4 mr-2" />
-              Data Dashboard
-            </Button>
             <span className="text-sm text-muted-foreground">{user.email}</span>
             <ThemeToggle />
             <Button variant="outline" size="sm" onClick={handleSignOut}>
@@ -168,6 +210,17 @@ const Dashboard = () => {
               <BookOpen className="w-4 h-4" />
               Q&A Management
             </button>
+            <button
+              onClick={() => setActiveTab("dataDashboard")}
+              className={`flex items-center gap-2 px-6 py-3 border-b-2 transition-colors ${
+                activeTab === "dataDashboard"
+                  ? "border-primary text-primary font-medium"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <BarChart3 className="w-4 h-4" />
+              Data Dashboard
+            </button>
           </div>
         </div>
       </div>
@@ -193,6 +246,25 @@ const Dashboard = () => {
           <div className="text-center py-12">
             <p className="text-muted-foreground">Q&A Management - Coming soon</p>
           </div>
+        )}
+        {activeTab === "dataDashboard" && (
+          <>
+            {loadingFile ? (
+              <Card>
+                <CardContent className="p-6">
+                  <p className="text-muted-foreground text-center">Loading dashboard...</p>
+                </CardContent>
+              </Card>
+            ) : fileContent ? (
+              <DataDashboard fileContent={fileContent} fileName={fileName} />
+            ) : (
+              <Card>
+                <CardContent className="p-12 text-center">
+                  <p className="text-muted-foreground">No data uploaded yet. Please upload a file to view the dashboard.</p>
+                </CardContent>
+              </Card>
+            )}
+          </>
         )}
       </div>
     </div>
