@@ -70,7 +70,7 @@ const Index = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-12 sm:pt-40 sm:pb-20 md:pt-48 lg:pt-56 md:pb-32 px-4 sm:px-6">
+      <section className="pt-24 pb-12 sm:pt-40 sm:pb-20 md:pt-48 lg:pt-56 md:pb-32 px-4 sm:px-6">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center space-y-6 sm:space-y-8 animate-fade-in">
             <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-primary/20 bg-primary/5 text-xs sm:text-sm text-muted-foreground animate-slide-up">
@@ -80,7 +80,7 @@ const Index = () => {
 
             <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold leading-tight tracking-tight animate-slide-up animate-delay-100 px-2">
               Transform Data Into
-              <span className="block h-full text-gradient mt-2">Actionable Insights</span>
+              <span className="block leading-[1.1] text-gradient mt-2">Actionable Insights</span>
             </h1>
 
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-slide-up animate-delay-200 px-4">
