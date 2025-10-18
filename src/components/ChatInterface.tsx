@@ -6,7 +6,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Send, Loader2, Eye, Brain, Target, FileSpreadsheet } from "lucide-react";
 import ReasoningCard from "@/components/ReasoningCard";
-import DataDashboard from "@/components/DataDashboard";
 
 const determineRelevantCard = (question: string): "observation" | "interpretation" | "actionable" => {
   const lowerQ = question.toLowerCase();
@@ -330,19 +329,6 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
 
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Data Dashboard */}
-      {fileContent && sessionInfo && !loadingFile && (
-        <DataDashboard fileContent={fileContent} fileName={sessionInfo.fileName} />
-      )}
-      
-      {loadingFile && (
-        <Card className="mb-6">
-          <CardContent className="p-6">
-            <p className="text-muted-foreground text-center">Loading dashboard...</p>
-          </CardContent>
-        </Card>
-      )}
-      
       <Card className="shadow-lg">
         <div className="h-[600px] flex flex-col">
           {/* File Info Header */}
