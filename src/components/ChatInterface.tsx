@@ -280,6 +280,9 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
 
       if (error) throw error;
 
+      // Check if we got all three sections (predefined Q&A)
+      const hasAllSections = data.observation && data.interpretation && data.actionable_conclusion;
+
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
@@ -287,7 +290,8 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         observation: data.observation,
         interpretation: data.interpretation,
         actionable_conclusion: data.actionable_conclusion,
-        relevantCard: relevantCard,
+        // Only set relevantCard if we don't have all three sections
+        relevantCard: hasAllSections ? undefined : relevantCard,
       };
 
       setMessages(prev => [...prev, assistantMessage]);

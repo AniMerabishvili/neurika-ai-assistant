@@ -94,36 +94,13 @@ serve(async (req) => {
         if (matchedQA) {
           console.log('Found matching Q&A pair:', matchedQA.id);
           
-          let result;
-          if (focusedType === 'observation') {
-            result = {
-              content: matchedQA.observation_content || "Processing...",
-              observation: matchedQA.observation_content || '',
-              interpretation: '',
-              actionable_conclusion: ''
-            };
-          } else if (focusedType === 'interpretation') {
-            result = {
-              content: matchedQA.interpretation_content || "Processing...",
-              observation: '',
-              interpretation: matchedQA.interpretation_content || '',
-              actionable_conclusion: ''
-            };
-          } else if (focusedType === 'actionable') {
-            result = {
-              content: matchedQA.actionable_content || "Processing...",
-              observation: '',
-              interpretation: '',
-              actionable_conclusion: matchedQA.actionable_content || ''
-            };
-          } else {
-            result = {
-              content: "Complete analysis from predefined Q&A",
-              observation: matchedQA.observation_content || '',
-              interpretation: matchedQA.interpretation_content || '',
-              actionable_conclusion: matchedQA.actionable_content || ''
-            };
-          }
+          // For predefined Q&A, always return all three sections regardless of focusedType
+          const result = {
+            content: "Complete analysis from predefined Q&A",
+            observation: matchedQA.observation_content || '',
+            interpretation: matchedQA.interpretation_content || '',
+            actionable_conclusion: matchedQA.actionable_content || ''
+          };
           
           return new Response(JSON.stringify(result), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -205,36 +182,13 @@ Patients with scores below 60 have dramatically worse outcomes, regardless of ot
 - Biomarker 1: High expression correlates with poor prognosis (potential therapeutic target)
 - Biomarker 2: High expression correlates with better outcomes (potential protective factor)`;
 
-      let result;
-      if (focusedType === 'observation') {
-        result = {
-          content: "I'll analyze your brain tumor dataset to identify the key factors influencing patient survival.",
-          observation: observationContent,
-          interpretation: '',
-          actionable_conclusion: ''
-        };
-      } else if (focusedType === 'interpretation') {
-        result = {
-          content: "Analyzing statistical relationships and treatment efficacy.",
-          observation: '',
-          interpretation: interpretationContent,
-          actionable_conclusion: ''
-        };
-      } else if (focusedType === 'actionable') {
-        result = {
-          content: "Key survival factors and actionable insights.",
-          observation: '',
-          interpretation: '',
-          actionable_conclusion: actionableContent
-        };
-      } else {
-        result = {
-          content: "Complete analysis of brain tumor survival factors",
-          observation: observationContent,
-          interpretation: interpretationContent,
-          actionable_conclusion: actionableContent
-        };
-      }
+      // For hardcoded Q&A, always return all three sections regardless of focusedType
+      const result = {
+        content: "Complete analysis of brain tumor survival factors",
+        observation: observationContent,
+        interpretation: interpretationContent,
+        actionable_conclusion: actionableContent
+      };
       
       return new Response(JSON.stringify(result), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -311,36 +265,13 @@ AIC: 16
 - Print the full correlation heatmap and highlight any notable relationships.
 - Summarize the Firth model outputs cleanly and visualize any significant predictors.`;
 
-      let result;
-      if (focusedType === 'observation') {
-        result = {
-          content: "Loading and analyzing dataset structure.",
-          observation: observationContent,
-          interpretation: '',
-          actionable_conclusion: ''
-        };
-      } else if (focusedType === 'interpretation') {
-        result = {
-          content: "Statistical modeling and regression analysis.",
-          observation: '',
-          interpretation: interpretationContent,
-          actionable_conclusion: ''
-        };
-      } else if (focusedType === 'actionable') {
-        result = {
-          content: "Summary and next steps.",
-          observation: '',
-          interpretation: '',
-          actionable_conclusion: actionableContent
-        };
-      } else {
-        result = {
-          content: "Here's what I ran: loaded the brain tumor dataset, did quick EDA, correlations, and survival association tests, then tried logistic regression.",
-          observation: observationContent,
-          interpretation: interpretationContent,
-          actionable_conclusion: actionableContent
-        };
-      }
+      // For hardcoded Q&A, always return all three sections regardless of focusedType
+      const result = {
+        content: "Complete statistical analysis of brain tumor dataset",
+        observation: observationContent,
+        interpretation: interpretationContent,
+        actionable_conclusion: actionableContent
+      };
       
       return new Response(JSON.stringify(result), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
