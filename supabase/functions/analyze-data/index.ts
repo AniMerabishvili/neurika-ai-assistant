@@ -42,7 +42,7 @@ serve(async (req) => {
         // Download file from storage
         const { data: fileContent, error: downloadError } = await supabase
           .storage
-          .from('datasets')
+          .from('uploads')
           .download(fileData.file_path);
 
         if (!downloadError && fileContent) {
@@ -83,6 +83,7 @@ Focus on accuracy, insight, and clarity. Keep each section concise but informati
         ],
         temperature: 0.7,
         max_tokens: 1000,
+        response_format: { type: "json_object" }
       }),
     });
 
