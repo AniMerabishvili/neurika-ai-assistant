@@ -16,16 +16,17 @@ interface Session {
 
 interface ChatHistoryProps {
   onSessionSelect?: (sessionId: string, fileId: string, fileName: string) => void;
+  refreshTrigger?: number;
 }
 
-const ChatHistory = ({ onSessionSelect }: ChatHistoryProps) => {
+const ChatHistory = ({ onSessionSelect, refreshTrigger }: ChatHistoryProps) => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchSessions();
-  }, []);
+  }, [refreshTrigger]);
 
   const fetchSessions = async () => {
     try {
@@ -39,13 +40,18 @@ const ChatHistory = ({ onSessionSelect }: ChatHistoryProps) => {
           title,
           created_at,
           file_id,
-          uploaded_files(file_name),
+          uploaded_files!chat_sessions_file_id_fkey(file_name),
           chat_messages(count)
         `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching sessions:', error);
+        throw error;
+      }
+
+      console.log('Fetched sessions:', data);
 
       const formattedSessions = data?.map(session => ({
         id: session.id,
@@ -55,6 +61,8 @@ const ChatHistory = ({ onSessionSelect }: ChatHistoryProps) => {
         file_id: session.file_id,
         file_name: session.uploaded_files?.file_name || null,
       })) || [];
+
+      console.log('Formatted sessions:', formattedSessions);
 
       setSessions(formattedSessions);
     } catch (error: any) {

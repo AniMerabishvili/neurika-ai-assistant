@@ -16,6 +16,7 @@ const Dashboard = () => {
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  const [historyRefreshTrigger, setHistoryRefreshTrigger] = useState(0);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -63,6 +64,10 @@ const Dashboard = () => {
     setSelectedFileId(fileId);
     setSelectedFileName(fileName);
     setActiveTab("chat");
+  };
+
+  const handleSessionCreated = () => {
+    setHistoryRefreshTrigger(prev => prev + 1);
   };
 
   if (!user) return null;
@@ -144,9 +149,15 @@ const Dashboard = () => {
             fileId={selectedFileId} 
             fileName={selectedFileName || undefined}
             sessionId={selectedSessionId}
+            onSessionCreated={handleSessionCreated}
           />
         )}
-        {activeTab === "history" && <ChatHistory onSessionSelect={handleSessionSelected} />}
+        {activeTab === "history" && (
+          <ChatHistory 
+            onSessionSelect={handleSessionSelected}
+            refreshTrigger={historyRefreshTrigger}
+          />
+        )}
       </div>
     </div>
   );

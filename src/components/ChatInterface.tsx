@@ -81,6 +81,8 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
 
       const sessionTitle = fileName ? `Analysis: ${fileName}` : "New Analysis";
 
+      console.log('Creating session with:', { user_id: user.id, file_id: fileId, title: sessionTitle });
+
       const { data, error } = await supabase
         .from('chat_sessions')
         .insert({
@@ -91,14 +93,26 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating session:', error);
+        throw error;
+      }
+
+      console.log('Session created:', data);
       setSessionId(data.id);
+      
       if (onSessionCreated) {
         onSessionCreated(data.id);
       }
-    } catch (error: any) {
+
       toast({
-        title: "Error",
+        title: "Chat session created",
+        description: `Ready to analyze ${fileName || 'your data'}`,
+      });
+    } catch (error: any) {
+      console.error('Session creation failed:', error);
+      toast({
+        title: "Error creating session",
         description: error.message,
         variant: "destructive",
       });
