@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { LogOut, Upload, MessageSquare, History, BarChart3 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ThemeToggle from "@/components/ThemeToggle";
+import AddTeamMember from "@/components/AddTeamMember";
 import FileUpload from "@/components/FileUpload";
 import ChatInterface from "@/components/ChatInterface";
 import ChatHistory from "@/components/ChatHistory";
@@ -185,6 +186,7 @@ const Dashboard = () => {
           
           <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             <span className="text-xs sm:text-sm text-muted-foreground hidden md:block truncate max-w-[150px]">{user.email}</span>
+            <AddTeamMember />
             <ThemeToggle />
             <Button variant="outline" size="sm" onClick={handleSignOut} className="text-xs sm:text-sm">
               <LogOut className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
