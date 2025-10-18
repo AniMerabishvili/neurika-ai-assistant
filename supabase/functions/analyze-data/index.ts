@@ -13,11 +13,14 @@ serve(async (req) => {
   }
 
   try {
-    const { question, fileId, sessionId } = await req.json();
+    const { question, fileId, sessionId, cardType } = await req.json();
 
     if (!question) {
       throw new Error('Question is required');
     }
+
+    // Default to all three if not specified
+    const focusedType = cardType || 'all';
 
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
@@ -53,7 +56,33 @@ serve(async (req) => {
       }
     }
 
-    console.log('Calling OpenAI API...');
+    console.log('Calling OpenAI API with focus:', focusedType);
+
+    // Create appropriate system prompt based on focus type
+    let systemPrompt = '';
+    if (focusedType === 'observation') {
+      systemPrompt = `You are Neurika.ai, an AI Data Analyst. Analyze the dataset and provide a clear, factual OBSERVATION only.
+Return JSON with: { "observation": "Clear factual summary of what the data shows, including specific numbers, trends, and patterns" }
+Be thorough and specific in your observation.`;
+    } else if (focusedType === 'interpretation') {
+      systemPrompt = `You are Neurika.ai, an AI Data Analyst. Analyze the dataset and provide a deeper INTERPRETATION only.
+Return JSON with: { "interpretation": "Deeper insights explaining WHY patterns exist, relationships between variables, and analytical conclusions" }
+Focus on analytical depth and meaningful connections.`;
+    } else if (focusedType === 'actionable') {
+      systemPrompt = `You are Neurika.ai, an AI Data Analyst. Analyze the dataset and provide ACTIONABLE CONCLUSIONS only.
+Return JSON with: { "actionable_conclusion": "Practical, strategic recommendations and specific actions to take based on the data" }
+Be concrete and business-focused with your recommendations.`;
+    } else {
+      // Default: all three
+      systemPrompt = `You are Neurika.ai, an AI Data Analyst. Analyze the given dataset and user question. 
+Return your response as a JSON object with exactly these fields:
+{
+  "observation": "Clear, factual summary of what the data shows",
+  "interpretation": "Deeper insights, patterns, or relationships detected",
+  "actionable_conclusion": "Practical suggestions or conclusions from the data"
+}
+Focus on accuracy, insight, and clarity. Keep each section concise but informative.`;
+    }
 
     // Call OpenAI API
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -67,14 +96,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `You are Neurika.ai, an AI Data Analyst. Analyze the given dataset and user question. 
-Return your response as a JSON object with exactly these fields:
-{
-  "observation": "Clear, factual summary of what the data shows",
-  "interpretation": "Deeper insights, patterns, or relationships detected",
-  "actionable_conclusion": "Practical suggestions or conclusions from the data"
-}
-Focus on accuracy, insight, and clarity. Keep each section concise but informative.`
+            content: systemPrompt
           },
           {
             role: 'user',
@@ -82,7 +104,7 @@ Focus on accuracy, insight, and clarity. Keep each section concise but informati
           }
         ],
         temperature: 0.7,
-        max_tokens: 1000,
+        max_tokens: focusedType === 'all' ? 1000 : 500,
         response_format: { type: "json_object" }
       }),
     });

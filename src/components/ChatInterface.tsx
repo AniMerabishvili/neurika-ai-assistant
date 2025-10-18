@@ -265,15 +265,16 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         content: input,
       });
 
-      // Call AI analysis
+      // Call AI analysis with focused card type
       const currentFileId = sessionInfo?.fileId || fileId;
-      console.log('Calling AI with fileId:', currentFileId);
+      console.log('Calling AI with fileId:', currentFileId, 'cardType:', relevantCard);
       
       const { data, error } = await supabase.functions.invoke('analyze-data', {
         body: {
           question: input,
           fileId: currentFileId,
           sessionId,
+          cardType: relevantCard, // Pass the determined card type
         },
       });
 
