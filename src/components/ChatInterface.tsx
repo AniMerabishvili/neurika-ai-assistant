@@ -126,7 +126,7 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
 
       // Download the file content from storage
       const { data: storageData, error: storageError } = await supabase.storage
-        .from('datasets')
+        .from('uploads')
         .download(fileData.file_path);
 
       if (storageError) throw storageError;
