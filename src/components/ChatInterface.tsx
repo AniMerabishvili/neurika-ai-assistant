@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Send, Loader2, Eye, Brain, Target, FileSpreadsheet } from "lucide-react";
+import { Send, Loader2, Eye, Brain, Target, FileSpreadsheet, ChevronDown } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import ReasoningCard from "@/components/ReasoningCard";
 import ChartDisplay from "@/components/ChartDisplay";
 
@@ -469,73 +470,100 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
                   </div>
                 ) : (
                   <div className="w-full space-y-4">
-                    {message.relevantCard === "observation" && (
-                      <ReasoningCard
-                        icon={<Eye className="w-5 h-5" />}
-                        title="Observation"
-                        content={message.observation || "No observation available"}
-                        color="observation"
-                        isOpen={true}
-                      />
+                    {/* Show chart first if available */}
+                    {message.chartData && (
+                      <ChartDisplay chartData={message.chartData} />
                     )}
-                    {message.relevantCard === "interpretation" && (
-                      <ReasoningCard
-                        icon={<Brain className="w-5 h-5" />}
-                        title="Interpretation"
-                        content={message.interpretation || "No interpretation available"}
-                        color="interpretation"
-                        isOpen={true}
-                      />
-                    )}
-                    {message.relevantCard === "actionable" && (
-                      <ReasoningCard
-                        icon={<Target className="w-5 h-5" />}
-                        title="Actionable Conclusion"
-                        content={message.actionable_conclusion || "No actionable conclusion available"}
-                        color="actionable"
-                        isOpen={true}
-                      />
-                    )}
-                    {!message.relevantCard && (
-                      <>
-                        {message.observation && message.observation !== "No observation available" && (
-                          <ReasoningCard
-                            icon={<Eye className="w-5 h-5" />}
-                            title="Observation"
-                            content={message.observation}
-                            color="observation"
-                            isOpen={true}
-                          />
-                        )}
-                        {message.interpretation && message.interpretation !== "No interpretation available" && (
-                          <ReasoningCard
-                            icon={<Brain className="w-5 h-5" />}
-                            title="Interpretation"
-                            content={message.interpretation}
-                            color="interpretation"
-                            isOpen={true}
-                          />
-                        )}
-                        {message.actionable_conclusion && message.actionable_conclusion !== "No actionable conclusion available" && (
-                          <ReasoningCard
-                            icon={<Target className="w-5 h-5" />}
-                            title="Actionable Conclusion"
-                            content={message.actionable_conclusion}
-                            color="actionable"
-                            isOpen={true}
-                          />
-                        )}
-                        {!message.observation && !message.interpretation && !message.actionable_conclusion && (
-                          <div className="bg-muted px-4 py-3 rounded-lg max-w-[90%]">
+                    
+                    {/* If there's a chart, show text content in collapsible */}
+                    {message.chartData && message.content && (
+                      <Collapsible defaultOpen={false}>
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" className="flex items-center gap-2 w-full justify-start px-4 py-2 h-auto">
+                            <Brain className="w-4 h-4" />
+                            <span className="font-medium">Analyzing...</span>
+                            <ChevronDown className="w-4 h-4 ml-auto transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                          </Button>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="px-4 py-2">
+                          <div className="bg-muted/50 px-4 py-3 rounded-lg">
                             <div className="prose prose-sm dark:prose-invert max-w-none">
                               {message.content}
                             </div>
                           </div>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    )}
+                    
+                    {/* Show reasoning cards or regular content if no chart */}
+                    {!message.chartData && (
+                      <>
+                        {message.relevantCard === "observation" && (
+                          <ReasoningCard
+                            icon={<Eye className="w-5 h-5" />}
+                            title="Observation"
+                            content={message.observation || "No observation available"}
+                            color="observation"
+                            isOpen={true}
+                          />
+                        )}
+                        {message.relevantCard === "interpretation" && (
+                          <ReasoningCard
+                            icon={<Brain className="w-5 h-5" />}
+                            title="Interpretation"
+                            content={message.interpretation || "No interpretation available"}
+                            color="interpretation"
+                            isOpen={true}
+                          />
+                        )}
+                        {message.relevantCard === "actionable" && (
+                          <ReasoningCard
+                            icon={<Target className="w-5 h-5" />}
+                            title="Actionable Conclusion"
+                            content={message.actionable_conclusion || "No actionable conclusion available"}
+                            color="actionable"
+                            isOpen={true}
+                          />
+                        )}
+                        {!message.relevantCard && (
+                          <>
+                            {message.observation && message.observation !== "No observation available" && (
+                              <ReasoningCard
+                                icon={<Eye className="w-5 h-5" />}
+                                title="Observation"
+                                content={message.observation}
+                                color="observation"
+                                isOpen={true}
+                              />
+                            )}
+                            {message.interpretation && message.interpretation !== "No interpretation available" && (
+                              <ReasoningCard
+                                icon={<Brain className="w-5 h-5" />}
+                                title="Interpretation"
+                                content={message.interpretation}
+                                color="interpretation"
+                                isOpen={true}
+                              />
+                            )}
+                            {message.actionable_conclusion && message.actionable_conclusion !== "No actionable conclusion available" && (
+                              <ReasoningCard
+                                icon={<Target className="w-5 h-5" />}
+                                title="Actionable Conclusion"
+                                content={message.actionable_conclusion}
+                                color="actionable"
+                                isOpen={true}
+                              />
+                            )}
+                            {!message.observation && !message.interpretation && !message.actionable_conclusion && (
+                              <div className="bg-muted px-4 py-3 rounded-lg max-w-[90%]">
+                                <div className="prose prose-sm dark:prose-invert max-w-none">
+                                  {message.content}
+                                </div>
+                              </div>
+                            )}
+                          </>
                         )}
                       </>
-                    )}
-                    {message.chartData && (
-                      <ChartDisplay chartData={message.chartData} />
                     )}
                   </div>
                 )}
