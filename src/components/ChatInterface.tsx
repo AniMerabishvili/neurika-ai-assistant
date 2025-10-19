@@ -470,12 +470,7 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
                   </div>
                 ) : (
                   <div className="w-full space-y-4">
-                    {/* Show chart first if available */}
-                    {message.chartData && (
-                      <ChartDisplay chartData={message.chartData} />
-                    )}
-                    
-                    {/* If there's a chart, show text content in collapsible */}
+                    {/* If there's a chart, show text content in collapsible first */}
                     {message.chartData && message.content && (
                       <Collapsible defaultOpen={false}>
                         <CollapsibleTrigger asChild>
@@ -493,6 +488,11 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
                           </div>
                         </CollapsibleContent>
                       </Collapsible>
+                    )}
+                    
+                    {/* Show chart after analyzing section */}
+                    {message.chartData && (
+                      <ChartDisplay chartData={message.chartData} />
                     )}
                     
                     {/* Show reasoning cards or regular content if no chart */}
