@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
-import { LogOut, Upload, MessageSquare, History, BarChart3, Plug } from "lucide-react";
+import { LogOut, Upload, MessageSquare, History, BarChart3, Plug, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ThemeToggle from "@/components/ThemeToggle";
 import AddTeamMember from "@/components/AddTeamMember";
@@ -173,12 +173,12 @@ const Dashboard = () => {
       <header className="border-b bg-card shadow-sm">
         <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <div className="p-1.5 sm:p-2 rounded-lg bg-primary flex-shrink-0">
-              <MessageSquare className="w-4 h-4 sm:w-6 sm:h-6 text-primary-foreground" />
+            <div className="p-1.5 sm:p-2 rounded-xl gradient-primary flex-shrink-0">
+              <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-lg sm:text-2xl font-bold text-primary truncate">
-                Neurika.ai
+              <h1 className="text-lg sm:text-2xl font-bold truncate">
+                Neurika
               </h1>
               <p className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">AI Data Assistant</p>
             </div>
