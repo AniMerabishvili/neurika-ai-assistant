@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Send, Loader2, Eye, Brain, Target, FileSpreadsheet } from "lucide-react";
 import ReasoningCard from "@/components/ReasoningCard";
+import ChartDisplay from "@/components/ChartDisplay";
 
 const determineRelevantCard = (question: string): "observation" | "interpretation" | "actionable" => {
   const lowerQ = question.toLowerCase();
@@ -37,6 +38,14 @@ interface ChatInterfaceProps {
   onSessionCreated?: (sessionId: string) => void;
 }
 
+interface ChartData {
+  chartType: "bar" | "line" | "pie";
+  title: string;
+  data: Array<{ name: string; value: number }>;
+  xLabel?: string;
+  yLabel?: string;
+}
+
 interface Message {
   id: string;
   role: "user" | "assistant";
@@ -45,6 +54,7 @@ interface Message {
   interpretation?: string;
   actionable_conclusion?: string;
   relevantCard?: "observation" | "interpretation" | "actionable";
+  chartData?: ChartData;
 }
 
 interface SessionInfo {
@@ -348,10 +358,29 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
 
       const aiResponse = data.choices?.[0]?.message?.content || data.generatedText || "I couldn't generate a response.";
 
+      // Parse chart data from response
+      let chartData: ChartData | undefined;
+      let cleanedContent = aiResponse;
+      
+      const jsonMatch = aiResponse.match(/```json\s*(\{[\s\S]*?\})\s*```/);
+      if (jsonMatch) {
+        try {
+          const parsedChart = JSON.parse(jsonMatch[1]);
+          if (parsedChart.chartType && parsedChart.title && parsedChart.data) {
+            chartData = parsedChart;
+            // Remove the JSON block from the content
+            cleanedContent = aiResponse.replace(/```json\s*\{[\s\S]*?\}\s*```/, '').trim();
+          }
+        } catch (e) {
+          console.error('Error parsing chart data:', e);
+        }
+      }
+
       const assistantMessage: Message = {
         id: (Date.now() + 2).toString(),
         role: "assistant",
-        content: aiResponse,
+        content: cleanedContent,
+        chartData,
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -481,10 +510,15 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
                           />
                         )}
                         {!message.observation && !message.interpretation && !message.actionable_conclusion && (
-                          <div className="bg-muted px-4 py-3 rounded-lg max-w-[90%]">
-                            <div className="prose prose-sm dark:prose-invert max-w-none">
-                              {message.content}
+                          <div className="space-y-4">
+                            <div className="bg-muted px-4 py-3 rounded-lg max-w-[90%]">
+                              <div className="prose prose-sm dark:prose-invert max-w-none">
+                                {message.content}
+                              </div>
                             </div>
+                            {message.chartData && (
+                              <ChartDisplay chartData={message.chartData} />
+                            )}
                           </div>
                         )}
                       </div>
