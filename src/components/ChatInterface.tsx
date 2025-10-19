@@ -39,9 +39,9 @@ interface ChatInterfaceProps {
 }
 
 interface ChartData {
-  chartType: "bar" | "line" | "pie";
+  chartType: "bar" | "line" | "pie" | "scatter";
   title: string;
-  data: Array<{ name: string; value: number }>;
+  data: Array<{ name: string; value: number; x?: number; y?: number }>;
   xLabel?: string;
   yLabel?: string;
 }

@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, ScatterChart, Scatter, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 interface ChartData {
-  chartType: "bar" | "line" | "pie";
+  chartType: "bar" | "line" | "pie" | "scatter";
   title: string;
-  data: Array<{ name: string; value: number }>;
+  data: Array<{ name: string; value: number; x?: number; y?: number }>;
   xLabel?: string;
   yLabel?: string;
 }
@@ -105,6 +105,38 @@ const ChartDisplay = ({ chartData }: ChartDisplayProps) => {
               />
               <Legend />
             </PieChart>
+          </ResponsiveContainer>
+        );
+
+      case "scatter":
+        return (
+          <ResponsiveContainer width="100%" height={300}>
+            <ScatterChart>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <XAxis 
+                type="number"
+                dataKey="x"
+                name={xLabel || "X"}
+                label={xLabel ? { value: xLabel, position: 'insideBottom', offset: -5 } : undefined}
+                stroke="hsl(var(--foreground))"
+              />
+              <YAxis 
+                type="number"
+                dataKey="y"
+                name={yLabel || "Y"}
+                label={yLabel ? { value: yLabel, angle: -90, position: 'insideLeft' } : undefined}
+                stroke="hsl(var(--foreground))"
+              />
+              <Tooltip 
+                cursor={{ strokeDasharray: '3 3' }}
+                contentStyle={{ 
+                  backgroundColor: 'hsl(var(--popover))',
+                  border: '1px solid hsl(var(--border))',
+                  borderRadius: '6px'
+                }}
+              />
+              <Scatter name={title} data={data} fill="hsl(var(--primary))" />
+            </ScatterChart>
           </ResponsiveContainer>
         );
 
