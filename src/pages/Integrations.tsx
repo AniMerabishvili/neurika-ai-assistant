@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, Database, HardDrive, TrendingUp, Zap } from "lucide-react";
+import { Search, Database, HardDrive, TrendingUp, Zap, Upload, MessageSquare, History, BarChart3, ArrowLeft } from "lucide-react";
 
 interface Integration {
   name: string;
@@ -56,6 +57,7 @@ const getBadgeVariant = (category: string) => {
 
 const Integrations = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   const filterIntegrations = (items: Integration[]) => {
     if (!searchQuery) return items;
@@ -73,6 +75,61 @@ const Integrations = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Navigation Header */}
+      <header className="border-b bg-card sticky top-0 z-50">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-4 py-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/dashboard")}
+              className="gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Dashboard
+            </Button>
+            <div className="flex gap-1 ml-auto">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/dashboard")}
+                className="gap-2"
+              >
+                <Upload className="w-4 h-4" />
+                Upload
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/dashboard")}
+                className="gap-2"
+              >
+                <MessageSquare className="w-4 h-4" />
+                Chat
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/dashboard")}
+                className="gap-2"
+              >
+                <History className="w-4 h-4" />
+                History
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/dashboard")}
+                className="gap-2"
+              >
+                <BarChart3 className="w-4 h-4" />
+                Dashboard
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
