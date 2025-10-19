@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Send, Loader2, Eye, Brain, Target, FileSpreadsheet, ChevronDown } from "lucide-react";
+import { Send, Loader2, Eye, Brain, Target, FileSpreadsheet, ChevronDown, Download } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import ReasoningCard from "@/components/ReasoningCard";
 import ChartDisplay from "@/components/ChartDisplay";
@@ -423,6 +423,56 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
     }
   };
 
+  const handleDownloadFile = async () => {
+    if (!sessionInfo) return;
+
+    try {
+      const { data: fileData } = await supabase
+        .from('uploaded_files')
+        .select('file_path')
+        .eq('id', sessionInfo.fileId)
+        .single();
+
+      if (!fileData) {
+        toast({
+          title: "Error",
+          description: "File not found",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Download the file from storage
+      const { data: blob, error: downloadError } = await supabase.storage
+        .from('uploads')
+        .download(fileData.file_path);
+
+      if (downloadError) throw downloadError;
+
+      // Create a download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = sessionInfo.fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "Success",
+        description: "File downloaded successfully",
+      });
+    } catch (error: any) {
+      console.error('Error downloading file:', error);
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   if (!fileId) {
     return (
       <Card className="max-w-2xl mx-auto p-12 text-center">
@@ -440,10 +490,21 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
           {/* File Info Header */}
           {sessionInfo && (
             <div className="border-b bg-muted/30 px-6 py-3">
-              <div className="flex items-center gap-2 text-sm">
-                <FileSpreadsheet className="w-4 h-4 text-primary" />
-                <span className="font-medium">Analyzing:</span>
-                <span className="text-muted-foreground">{sessionInfo.fileName}</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-sm">
+                  <FileSpreadsheet className="w-4 h-4 text-primary" />
+                  <span className="font-medium">Analyzing:</span>
+                  <span className="text-muted-foreground">{sessionInfo.fileName}</span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleDownloadFile}
+                  className="h-8 gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Download
+                </Button>
               </div>
             </div>
           )}
