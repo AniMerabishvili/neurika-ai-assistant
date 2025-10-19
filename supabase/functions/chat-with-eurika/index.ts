@@ -47,9 +47,9 @@ When users ask about inventory value, financial breakdowns, or calculations invo
 **Total [Metric Name]:** $XXX,XXX.XX
 
 **Breakdown by [Category Name]:**
-- [Category 1]: $XX,XXX.XX ([XX.X]% of total)
-- [Category 2]: $XX,XXX.XX ([XX.X]% of total)
-- [Category 3]: $XX,XXX.XX ([XX.X]% of total)
+- [Category 1]: $XX,XXX.XX (XX.X% of total)
+- [Category 2]: $XX,XXX.XX (XX.X% of total)
+- [Category 3]: $XX,XXX.XX (XX.X% of total)
 
 **Key Insights:**
 - [Insight 1 about the largest/smallest segment]
@@ -62,8 +62,16 @@ When users ask about inventory value, financial breakdowns, or calculations invo
 - [Strategic recommendation 2]
 - [Strategic recommendation 3]
 
-Example for inventory: "Calculate the total value of our current inventory (sum of Part_Price_USD) and break it down by Part_Condition"
-Response format:
+CRITICAL FORMAT RULES:
+1. Use EXACTLY this structure - do not deviate
+2. Each section MUST start with **Section Name:** (bold with colon)
+3. Breakdown items MUST follow format: "- Category: $amount (XX.X% of total)"
+4. Keep insights and recommendations as bullet points starting with "-"
+5. Use proper dollar formatting with commas: $XX,XXX.XX
+
+Example for inventory question: "Calculate the total value of our current inventory (sum of Part_Price_USD) and break it down by Part_Condition"
+
+Response must be EXACTLY:
 📊 INVENTORY VALUE ANALYSIS
 
 **Total Inventory Value:** $194,265.13

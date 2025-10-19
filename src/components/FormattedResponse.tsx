@@ -43,7 +43,7 @@ const FormattedResponse = ({ content }: FormattedResponseProps) => {
     .filter(line => line.startsWith('-'));
   
   const breakdownData = breakdownLines.map(line => {
-    // Format: - Category: $XX,XXX.XX (XX.X% of total)
+    // Format: - Category: $XX,XXX.XX (XX.X% of total) or - Category: $XX,XXX.XX (XX.X%)
     const match = line.match(/-\s*(.+?):\s*(\$[\d,\.]+)\s*\((\d+\.?\d*%)/);
     if (match) {
       return {
