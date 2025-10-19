@@ -42,6 +42,55 @@ You: "Aha! Fantastic question! For age distributions, I always recommend histogr
 User: "This data seems messy with missing values"
 You: "Don't worry! Data cleaning is where the magic begins! ✨ I've found that 80% of insights come from properly prepared data. Let me guide you through the most effective cleaning strategies for your specific case."`;
 
+const analyzeCSV = (csvContent: string) => {
+  const lines = csvContent.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim());
+  const rows = lines.slice(1);
+  
+  // Analyze columns
+  const columnAnalysis = headers.map((header, idx) => {
+    const values = rows.map(row => row.split(',')[idx]?.trim()).filter(v => v);
+    const numericValues = values.filter(v => !isNaN(Number(v)));
+    const uniqueValues = new Set(values);
+    const missingCount = rows.length - values.length;
+    
+    return {
+      name: header,
+      type: numericValues.length > values.length * 0.8 ? 'numeric' : 
+            uniqueValues.size < 10 ? 'categorical' : 'text',
+      uniqueCount: uniqueValues.size,
+      missingCount,
+      sampleValues: Array.from(uniqueValues).slice(0, 3)
+    };
+  });
+  
+  // Generate insights
+  const insights: string[] = [];
+  insights.push(`📊 I see you have ${rows.length} rows and ${headers.length} columns!`);
+  
+  const numericCols = columnAnalysis.filter(c => c.type === 'numeric');
+  if (numericCols.length > 0) {
+    insights.push(`🔢 Found ${numericCols.length} numeric columns: ${numericCols.map(c => c.name).join(', ')}`);
+  }
+  
+  const categoricalCols = columnAnalysis.filter(c => c.type === 'categorical');
+  if (categoricalCols.length > 0) {
+    insights.push(`🏷️ Found ${categoricalCols.length} categorical columns: ${categoricalCols.map(c => c.name).join(', ')}`);
+  }
+  
+  const missingData = columnAnalysis.filter(c => c.missingCount > 0);
+  if (missingData.length > 0) {
+    insights.push(`⚠️ Missing values detected in: ${missingData.map(c => `${c.name} (${c.missingCount})`).join(', ')}`);
+  }
+  
+  return {
+    summary: insights.join('\n'),
+    columnAnalysis,
+    rowCount: rows.length,
+    columnCount: headers.length
+  };
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -49,7 +98,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const { messages, csvContent } = await req.json();
 
     if (!openAIApiKey) {
       console.error('OpenAI API key is not configured');
@@ -64,6 +113,33 @@ serve(async (req) => {
 
     console.log('Calling OpenAI with Eurika personality...');
 
+    // Prepare messages with CSV analysis if provided
+    let contextMessages = [...messages];
+    
+    if (csvContent) {
+      console.log('CSV content detected, analyzing...');
+      const analysis = analyzeCSV(csvContent);
+      
+      // Add analysis as context
+      const analysisContext = `
+🔍 **AUTOMATIC DATA SCAN COMPLETE:**
+
+${analysis.summary}
+
+**Column Details:**
+${analysis.columnAnalysis.map(col => 
+  `- ${col.name}: ${col.type} (${col.uniqueCount} unique values${col.missingCount > 0 ? `, ${col.missingCount} missing` : ''})`
+).join('\n')}
+
+This analysis has been stored in my context. I'll use it to answer your questions with precision!
+`;
+      
+      contextMessages = [
+        { role: 'assistant', content: analysisContext },
+        ...messages
+      ];
+    }
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -74,7 +150,7 @@ serve(async (req) => {
         model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: EURIKA_SYSTEM_PROMPT },
-          ...messages
+          ...contextMessages
         ],
         temperature: 0.8,
         max_tokens: 1000,
@@ -102,7 +178,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in chat-with-eurika function:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

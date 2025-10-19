@@ -59,6 +59,8 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(propSessionId || null);
   const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null);
+  const [csvContent, setCsvContent] = useState<string | null>(null);
+  const [csvAnalyzed, setCsvAnalyzed] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const sessionCreatingRef = useRef(false);
   const { toast } = useToast();
@@ -112,6 +114,32 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const loadCsvContent = async (fileIdToLoad: string) => {
+    try {
+      const { data: fileData } = await supabase
+        .from('uploaded_files')
+        .select('file_path')
+        .eq('id', fileIdToLoad)
+        .single();
+
+      if (!fileData) return;
+
+      // Download the file content from storage
+      const { data: storageData, error: storageError } = await supabase.storage
+        .from('datasets')
+        .download(fileData.file_path);
+
+      if (storageError) throw storageError;
+
+      const text = await storageData.text();
+      setCsvContent(text);
+      setCsvAnalyzed(false);
+      console.log('CSV content loaded, size:', text.length);
+    } catch (error) {
+      console.error('Error loading CSV content:', error);
+    }
+  };
+
   const loadSessionWithFile = async (sessionId: string) => {
     try {
       // Load session info with file details
@@ -135,6 +163,11 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         };
         setSessionInfo(fileInfo);
         console.log('Loaded session info:', sessionData);
+        
+        // Load CSV content for Eurika
+        if (sessionData.file_id) {
+          await loadCsvContent(sessionData.file_id);
+        }
       }
 
       // Load messages
@@ -157,6 +190,11 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         }));
         setMessages(formattedMessages);
         console.log('Loaded messages:', formattedMessages.length);
+        
+        // If there are existing messages, CSV was already analyzed
+        if (formattedMessages.length > 0) {
+          setCsvAnalyzed(true);
+        }
       }
     } catch (error: any) {
       console.error('Error loading session:', error);
@@ -210,6 +248,9 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
           fileName: fileName,
         };
         setSessionInfo(info);
+        
+        // Load CSV content for Eurika
+        await loadCsvContent(fileId);
       }
       
       if (onSessionCreated) {
@@ -235,7 +276,6 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
     if (!input.trim() || !sessionId) return;
 
     const questionText = input;
-    const relevantCard = determineRelevantCard(questionText);
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -256,36 +296,42 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         session_id: sessionId,
         user_id: user.id,
         role: 'user',
-        content: input,
+        content: questionText,
       });
 
-      // Call AI analysis with focused card type
-      const currentFileId = sessionInfo?.fileId || fileId;
-      console.log('Calling AI with fileId:', currentFileId, 'cardType:', relevantCard);
+      // Prepare messages for Eurika
+      const conversationMessages = messages.map(msg => ({
+        role: msg.role,
+        content: msg.content,
+      }));
       
-      const { data, error } = await supabase.functions.invoke('analyze-data', {
+      // Add current user message
+      conversationMessages.push({
+        role: 'user',
+        content: questionText,
+      });
+
+      // Call Eurika with CSV content on first message
+      const { data, error } = await supabase.functions.invoke('chat-with-eurika', {
         body: {
-          question: input,
-          fileId: currentFileId,
-          sessionId,
-          cardType: relevantCard, // Pass the determined card type
+          messages: conversationMessages,
+          csvContent: !csvAnalyzed && csvContent ? csvContent : undefined,
         },
       });
 
       if (error) throw error;
 
-      // Check if we got all three sections (predefined Q&A)
-      const hasAllSections = data.observation && data.interpretation && data.actionable_conclusion;
+      // Mark CSV as analyzed after first response
+      if (!csvAnalyzed && csvContent) {
+        setCsvAnalyzed(true);
+      }
+
+      const aiResponse = data.choices?.[0]?.message?.content || data.generatedText || "I couldn't generate a response.";
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: data.content,
-        observation: data.observation,
-        interpretation: data.interpretation,
-        actionable_conclusion: data.actionable_conclusion,
-        // Only set relevantCard if we don't have all three sections
-        relevantCard: hasAllSections ? undefined : relevantCard,
+        content: aiResponse,
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -295,10 +341,7 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         session_id: sessionId,
         user_id: user.id,
         role: 'assistant',
-        content: data.content,
-        observation: data.observation,
-        interpretation: data.interpretation,
-        actionable_conclusion: data.actionable_conclusion,
+        content: aiResponse,
       });
 
     } catch (error: any) {
