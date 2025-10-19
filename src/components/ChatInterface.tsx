@@ -367,6 +367,22 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         try {
           const parsedChart = JSON.parse(jsonMatch[1]);
           if (parsedChart.chartType && parsedChart.title && parsedChart.data) {
+            // Normalize scatter plot data format
+            if (parsedChart.chartType === 'scatter' && parsedChart.data.length > 0) {
+              const firstItem = parsedChart.data[0];
+              // Check if data needs transformation (has properties other than x, y, name)
+              if (!firstItem.hasOwnProperty('x') || !firstItem.hasOwnProperty('y')) {
+                // Find numeric properties to use as x and y
+                const keys = Object.keys(firstItem).filter(k => k !== 'name' && typeof firstItem[k] === 'number');
+                if (keys.length >= 2) {
+                  parsedChart.data = parsedChart.data.map((item: any) => ({
+                    name: item.name || item[Object.keys(item)[0]],
+                    x: item[keys[0]],
+                    y: item[keys[1]]
+                  }));
+                }
+              }
+            }
             chartData = parsedChart;
             // Remove the JSON block from the content
             cleanedContent = aiResponse.replace(/```json\s*\{[\s\S]*?\}\s*```/, '').trim();

@@ -49,7 +49,7 @@ Include a JSON code block with this exact structure:
 }
 \`\`\`
 
-For scatter plots, use this format:
+For scatter plots, use this EXACT format:
 \`\`\`json
 {
   "chartType": "scatter",
@@ -62,6 +62,8 @@ For scatter plots, use this format:
   "yLabel": "Y Axis Label"
 }
 \`\`\`
+
+CRITICAL: For scatter plots, each data point MUST have "name", "x", and "y" properties. Do NOT use other property names like "calories" or "protein" - convert them to "x" and "y" values.
 
 **Chart Type Guidelines:**
 - Bar charts: Comparisons, categories, rankings
