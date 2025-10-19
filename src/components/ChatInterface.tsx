@@ -323,9 +323,9 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <Card className="shadow-lg">
-        <div className="h-[600px] flex flex-col">
+    <div className="w-full h-[calc(100vh-8.5rem)]">
+      <Card className="h-full shadow-none border-0 rounded-none">
+        <div className="h-full flex flex-col">
           {/* File Info Header */}
           {sessionInfo && (
             <div className="border-b bg-muted/30 px-6 py-3">

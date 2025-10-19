@@ -249,43 +249,44 @@ const Dashboard = () => {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
-        {activeTab === "upload" && <FileUpload onFileUploaded={handleFileUploaded} />}
-        {activeTab === "chat" && (
-          <ChatInterface 
-            fileId={selectedFileId} 
-            fileName={selectedFileName || undefined}
-            sessionId={selectedSessionId}
-            onSessionCreated={handleSessionCreated}
-          />
-        )}
-        {activeTab === "history" && (
-          <ChatHistory 
-            onSessionSelect={handleSessionSelected}
-            refreshTrigger={historyRefreshTrigger}
-          />
-        )}
-        {activeTab === "dataDashboard" && (
-          <>
-            {loadingFile ? (
-              <Card>
-                <CardContent className="p-6">
-                  <p className="text-muted-foreground text-center">Loading dashboard...</p>
-                </CardContent>
-              </Card>
-            ) : selectedFileId && fileContent ? (
-              <DataDashboard fileContent={fileContent} fileName={fileName} />
-            ) : (
-              <Card>
-                <CardContent className="p-12 text-center">
-                  <BarChart3 className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
-                  <p className="text-muted-foreground">No data selected. Please upload a file or select a chat from history to view the dashboard.</p>
-                </CardContent>
-              </Card>
-            )}
-          </>
-        )}
-      </div>
+      {activeTab === "chat" ? (
+        <ChatInterface 
+          fileId={selectedFileId} 
+          fileName={selectedFileName || undefined}
+          sessionId={selectedSessionId}
+          onSessionCreated={handleSessionCreated}
+        />
+      ) : (
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+          {activeTab === "upload" && <FileUpload onFileUploaded={handleFileUploaded} />}
+          {activeTab === "history" && (
+            <ChatHistory 
+              onSessionSelect={handleSessionSelected}
+              refreshTrigger={historyRefreshTrigger}
+            />
+          )}
+          {activeTab === "dataDashboard" && (
+            <>
+              {loadingFile ? (
+                <Card>
+                  <CardContent className="p-6">
+                    <p className="text-muted-foreground text-center">Loading dashboard...</p>
+                  </CardContent>
+                </Card>
+              ) : selectedFileId && fileContent ? (
+                <DataDashboard fileContent={fileContent} fileName={fileName} />
+              ) : (
+                <Card>
+                  <CardContent className="p-12 text-center">
+                    <BarChart3 className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
+                    <p className="text-muted-foreground">No data selected. Please upload a file or select a chat from history to view the dashboard.</p>
+                  </CardContent>
+                </Card>
+              )}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };
