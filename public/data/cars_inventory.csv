@@ -1,0 +1,101 @@
+Car_ID,Brand,Model,Year,Mileage_km,Price_USD,Part_Name,Part_Price_USD,Part_Age_Years,Part_Condition,Supplier,Country_of_Origin
+1,Chevrolet,Traverse,2009,200416,17643.78,Suspension,1786.74,8,Refurbished,Speedy Imports,Japan
+2,Mercedes,GLC,2020,54941,36500.48,Alternator,4500.68,2,Refurbished,DriveLine Inc,USA
+3,Audi,Q7,2013,204096,14277.71,Alternator,1313.02,3,New,MotorTech LLC,China
+4,Nissan,Pathfinder,2009,185466,13700.32,Engine,422.37,8,New,CarParts Global,Germany
+5,BMW,X3,2005,191626,66910.82,Radiator,1750.62,10,New,CarParts Global,USA
+6,Chevrolet,Equinox,2011,213500,71932.18,Alternator,3939.49,9,Refurbished,CarParts Global,Japan
+7,Ford,Focus,2010,112483,62328.73,Fuel Pump,3416.06,6,Refurbished,DriveLine Inc,Germany
+8,Hyundai,Elantra,2010,219724,34807.44,Battery,4451.9,3,New,MotorTech LLC,South Korea
+9,Nissan,Rogue,2016,230908,67854.77,Brake Pads,194.98,9,Refurbished,CarParts Global,Germany
+10,Chevrolet,Impala,2019,148175,10821.87,Brake Pads,183.64,3,New,MotorTech LLC,Japan
+11,Audi,Q7,2012,238977,23513.34,Engine,3873.73,7,Used,Speedy Imports,USA
+12,Audi,A4,2021,109741,73306.67,Brake Pads,664.46,5,Refurbished,AutoWorld Ltd,USA
+13,Toyota,RAV4,2018,211087,35036.23,Fuel Pump,4590.37,6,New,CarParts Global,USA
+14,Audi,Q5,2017,209292,48359.64,Transmission,1259.64,1,Used,AutoWorld Ltd,China
+15,Toyota,RAV4,2010,64371,29438.09,Engine,208.54,10,Refurbished,DriveLine Inc,China
+16,Kia,Optima,2012,216616,6030.79,Radiator,371.52,1,Used,CarParts Global,Germany
+17,Honda,Accord,2016,162681,23500.57,Suspension,3138.54,4,New,Speedy Imports,China
+18,Mercedes,C-Class,2018,139048,37477.62,Engine,1191.08,8,New,MotorTech LLC,USA
+19,BMW,3 Series,2014,74876,62854.16,Battery,2661.77,8,Refurbished,CarParts Global,Japan
+20,Honda,CR-V,2022,138412,66993.18,Brake Pads,3880.88,5,New,AutoWorld Ltd,South Korea
+21,Audi,A4,2021,194447,54220.5,Battery,1721.12,9,Refurbished,Speedy Imports,USA
+22,Mercedes,E-Class,2015,75346,54963.69,Engine,934.05,9,New,CarParts Global,China
+23,Kia,Optima,2018,209919,79043.35,Radiator,859.27,3,Refurbished,AutoWorld Ltd,USA
+24,Nissan,Pathfinder,2013,133385,43012.39,Headlights,1642.68,7,Used,Speedy Imports,Japan
+25,Audi,A4,2019,33747,31567.98,Engine,617.23,1,Refurbished,DriveLine Inc,South Korea
+26,Honda,Civic,2010,234408,40055.18,Headlights,438.73,6,Used,DriveLine Inc,USA
+27,Toyota,Camry,2007,149683,23724.27,Exhaust,258.9,10,Used,CarParts Global,South Korea
+28,Hyundai,Tucson,2014,84443,48991.77,Brake Pads,930.69,9,Refurbished,Speedy Imports,USA
+29,Mercedes,C-Class,2019,102440,35809.01,Alternator,332.47,6,Refurbished,MotorTech LLC,Germany
+30,BMW,X5,2012,200416,16575.31,Headlights,4704.14,9,New,Speedy Imports,USA
+31,Chevrolet,Impala,2006,146896,21547.34,Fuel Pump,641.3,9,Refurbished,CarParts Global,Japan
+32,Hyundai,Elantra,2012,203158,73201.69,Engine,523.42,2,New,AutoWorld Ltd,South Korea
+33,Honda,Pilot,2014,116702,18185.11,Alternator,457.22,1,New,CarParts Global,Japan
+34,Audi,A4,2006,39077,62294.79,Battery,1768.25,7,New,DriveLine Inc,China
+35,Hyundai,Sonata,2019,127224,45057.91,Engine,2621.32,2,New,CarParts Global,Germany
+36,Toyota,RAV4,2016,184315,74587.9,Battery,1462.38,7,Used,MotorTech LLC,USA
+37,Hyundai,Santa Fe,2005,132605,44324.47,Headlights,898.59,4,Used,CarParts Global,USA
+38,Mercedes,GLC,2016,30453,9204.49,Headlights,4695.43,6,Refurbished,CarParts Global,South Korea
+39,Honda,Pilot,2007,168750,43320.81,Brake Pads,3480.04,7,New,AutoWorld Ltd,Japan
+40,Chevrolet,Equinox,2005,211189,69967.51,Battery,2799.22,1,Used,MotorTech LLC,USA
+41,Kia,Forte,2020,199848,14405.54,Headlights,3818.42,6,New,CarParts Global,USA
+42,Mercedes,GLA,2017,218242,20646.06,Transmission,2310.88,4,Refurbished,Speedy Imports,China
+43,Chevrolet,Equinox,2011,129522,52743.15,Fuel Pump,3348.96,9,New,MotorTech LLC,Germany
+44,Ford,Escape,2014,162117,61914.2,Engine,1365.21,9,Used,MotorTech LLC,Germany
+45,Ford,Escape,2018,21953,36894.07,Engine,1115.4,6,New,Speedy Imports,Japan
+46,Toyota,Camry,2005,229784,31958.86,Fuel Pump,4227.94,10,Used,MotorTech LLC,Germany
+47,Kia,Sorento,2019,189005,41650.27,Exhaust,1962.98,9,New,CarParts Global,USA
+48,Nissan,Altima,2014,221511,57575.15,Battery,1887.09,2,New,AutoWorld Ltd,Japan
+49,Mercedes,E-Class,2013,131943,15719.14,Radiator,3566.98,8,Refurbished,AutoWorld Ltd,China
+50,Mercedes,C-Class,2018,69421,18076.35,Fuel Pump,3481.86,9,Used,CarParts Global,South Korea
+51,Nissan,Sentra,2011,70424,25991.47,Suspension,82.45,4,New,DriveLine Inc,Japan
+52,Toyota,RAV4,2010,213756,31181.73,Battery,2659.15,5,New,CarParts Global,Germany
+53,Ford,Escape,2013,163246,22860.85,Suspension,4557.45,1,Refurbished,MotorTech LLC,China
+54,Mercedes,GLC,2013,171321,5559.16,Transmission,2788.17,5,New,AutoWorld Ltd,Germany
+55,Honda,Civic,2022,41797,5917.83,Fuel Pump,4424.16,6,New,MotorTech LLC,China
+56,Hyundai,Tucson,2007,240727,65579.16,Exhaust,4133.41,8,Used,MotorTech LLC,Japan
+57,Chevrolet,Traverse,2018,43818,50159.61,Engine,608.11,2,Refurbished,AutoWorld Ltd,Germany
+58,Honda,Pilot,2012,117767,54968.25,Brake Pads,493.22,8,Used,Speedy Imports,China
+59,Ford,Focus,2013,174400,75714.72,Alternator,3403.54,5,Used,MotorTech LLC,South Korea
+60,Toyota,RAV4,2017,95527,42529.53,Battery,1783.89,9,New,Speedy Imports,South Korea
+61,Ford,Explorer,2020,181673,53172.87,Battery,934.89,3,Used,CarParts Global,USA
+62,BMW,X3,2007,107138,14489.96,Alternator,3862.71,8,New,DriveLine Inc,Germany
+63,Ford,Escape,2022,61775,57049.7,Fuel Pump,1733.11,4,New,DriveLine Inc,China
+64,Mercedes,GLC,2019,224624,5029.24,Suspension,4922.98,9,Used,AutoWorld Ltd,Germany
+65,Hyundai,Elantra,2007,135971,79505.57,Alternator,4877.57,8,Refurbished,CarParts Global,China
+66,BMW,X3,2011,77732,36370.08,Alternator,4491.71,3,New,CarParts Global,China
+67,Nissan,Pathfinder,2006,29217,79614.33,Fuel Pump,1926.13,7,Used,MotorTech LLC,USA
+68,BMW,X3,2008,200248,57653.14,Brake Pads,636.01,6,Refurbished,DriveLine Inc,China
+69,Mercedes,GLA,2010,180672,17286.95,Suspension,3882.28,9,Used,DriveLine Inc,Japan
+70,Ford,Escape,2011,246269,72795.17,Suspension,4315.06,2,Used,CarParts Global,South Korea
+71,BMW,X5,2010,65384,30312.59,Battery,3886.52,10,Used,AutoWorld Ltd,USA
+72,Chevrolet,Traverse,2013,38607,26876.0,Fuel Pump,3150.88,3,New,CarParts Global,South Korea
+73,Honda,Pilot,2005,184310,11562.85,Transmission,825.55,8,Refurbished,Speedy Imports,USA
+74,Toyota,Highlander,2012,128721,54511.68,Engine,4116.47,5,Used,CarParts Global,South Korea
+75,BMW,5 Series,2020,205609,54812.67,Radiator,4930.06,6,New,MotorTech LLC,Japan
+76,Kia,Sportage,2014,62045,52490.07,Transmission,4305.66,1,Refurbished,DriveLine Inc,Japan
+77,Kia,Optima,2018,67639,28646.63,Brake Pads,3571.01,5,Refurbished,MotorTech LLC,Germany
+78,Kia,Sorento,2006,125961,36998.76,Brake Pads,4158.67,4,Refurbished,DriveLine Inc,USA
+79,BMW,3 Series,2005,244633,78666.25,Suspension,4254.82,7,Used,MotorTech LLC,Germany
+80,BMW,X5,2011,21101,40737.62,Headlights,1584.34,10,Used,MotorTech LLC,Japan
+81,Audi,A4,2014,207547,59773.77,Radiator,203.06,8,Used,MotorTech LLC,South Korea
+82,Kia,Optima,2021,145490,18355.0,Exhaust,193.94,4,Used,Speedy Imports,USA
+83,Mercedes,GLA,2010,22467,57280.15,Headlights,4766.0,3,Refurbished,MotorTech LLC,USA
+84,Kia,Optima,2017,33487,34664.15,Exhaust,2675.54,10,New,AutoWorld Ltd,South Korea
+85,Ford,Focus,2022,78637,45595.47,Exhaust,4448.94,10,Refurbished,MotorTech LLC,Japan
+86,Toyota,Camry,2021,90837,22942.7,Brake Pads,1847.81,10,Refurbished,CarParts Global,China
+87,Ford,Fusion,2006,146697,28378.17,Alternator,59.81,1,New,AutoWorld Ltd,Germany
+88,BMW,X5,2009,243267,15896.46,Transmission,1510.36,6,New,CarParts Global,USA
+89,Toyota,Highlander,2017,99332,31283.65,Headlights,4715.32,10,Used,Speedy Imports,Japan
+90,Nissan,Altima,2017,232466,47786.34,Fuel Pump,980.72,10,New,AutoWorld Ltd,China
+91,Chevrolet,Traverse,2015,232743,38122.7,Radiator,4715.16,5,Refurbished,Speedy Imports,China
+92,Toyota,Camry,2010,97371,38864.39,Battery,3173.32,7,Refurbished,DriveLine Inc,USA
+93,Kia,Sportage,2020,81458,55213.96,Transmission,2593.17,10,New,MotorTech LLC,South Korea
+94,Hyundai,Sonata,2006,83423,73529.63,Fuel Pump,622.25,9,Used,Speedy Imports,USA
+95,Toyota,Highlander,2019,215785,38485.52,Exhaust,2610.02,6,New,DriveLine Inc,South Korea
+96,Honda,CR-V,2020,90991,48922.51,Headlights,2802.13,3,New,DriveLine Inc,Japan
+97,Honda,CR-V,2014,167847,18896.04,Transmission,4789.03,1,Used,MotorTech LLC,Germany
+98,Honda,Accord,2007,172622,71887.48,Radiator,2621.97,2,Refurbished,MotorTech LLC,China
+99,Toyota,RAV4,2007,135753,41725.2,Battery,2855.49,4,Refurbished,CarParts Global,USA
+100,Honda,Pilot,2016,239022,74860.89,Suspension,2414.84,2,New,AutoWorld Ltd,Japan
