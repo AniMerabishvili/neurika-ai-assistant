@@ -452,7 +452,7 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
                     </div>
                   </div>
                 ) : (
-                  <div className="w-full">
+                  <div className="w-full space-y-4">
                     {message.relevantCard === "observation" && (
                       <ReasoningCard
                         icon={<Eye className="w-5 h-5" />}
@@ -481,7 +481,7 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
                       />
                     )}
                     {!message.relevantCard && (
-                      <div className="space-y-4">
+                      <>
                         {message.observation && message.observation !== "No observation available" && (
                           <ReasoningCard
                             icon={<Eye className="w-5 h-5" />}
@@ -510,18 +510,16 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
                           />
                         )}
                         {!message.observation && !message.interpretation && !message.actionable_conclusion && (
-                          <div className="space-y-4">
-                            <div className="bg-muted px-4 py-3 rounded-lg max-w-[90%]">
-                              <div className="prose prose-sm dark:prose-invert max-w-none">
-                                {message.content}
-                              </div>
+                          <div className="bg-muted px-4 py-3 rounded-lg max-w-[90%]">
+                            <div className="prose prose-sm dark:prose-invert max-w-none">
+                              {message.content}
                             </div>
-                            {message.chartData && (
-                              <ChartDisplay chartData={message.chartData} />
-                            )}
                           </div>
                         )}
-                      </div>
+                      </>
+                    )}
+                    {message.chartData && (
+                      <ChartDisplay chartData={message.chartData} />
                     )}
                   </div>
                 )}
