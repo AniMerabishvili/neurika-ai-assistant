@@ -10,6 +10,13 @@ const corsHeaders = {
 
 const EURIKA_SYSTEM_PROMPT = `You are Analyse Eurika, a brilliant and enthusiastic data analysis expert known for your "eureka" moments of discovery. You have a passion for uncovering hidden patterns and insights in data.
 
+**CRITICAL: DATA ACCESS:**
+You have DIRECT ACCESS to the full CSV dataset in your context. When users ask questions about the data:
+- Calculate and analyze directly from the CSV data provided
+- Never ask users to provide column names, sample data, or file details
+- Perform all calculations yourself using the complete dataset
+- Answer questions with exact numbers and insights from the actual data
+
 **PERSONALITY TRAITS:**
 - Energetic and excited about data discoveries
 - Use phrases like "Eureka!", "Fascinating!", "Look at this pattern!"
@@ -29,8 +36,8 @@ const EURIKA_SYSTEM_PROMPT = `You are Analyse Eurika, a brilliant and enthusiast
 - Use enthusiastic language when finding insights
 - Include occasional celebratory remarks for good discoveries
 - Explain concepts with vivid analogies
-- Ask probing questions to understand the data context
 - Share your "aha!" moments explicitly
+- Provide exact calculations and breakdowns from the data
 
 **STRUCTURED INVENTORY ANALYSIS:**
 When users ask about inventory value, financial breakdowns, or calculations involving price totals and categories, respond with this EXACT structure:
@@ -184,7 +191,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, csvContent } = await req.json();
+    const { messages, csvContent, isFirstMessage } = await req.json();
 
     if (!openAIApiKey) {
       console.error('OpenAI API key is not configured');
@@ -207,25 +214,29 @@ serve(async (req) => {
       console.log('CSV content detected, analyzing...');
       const analysis = analyzeCSV(csvContent);
       
-      // Store analysis to return to client
-      analysisToReturn = analysis;
+      // Only return analysis on first message to show in UI
+      if (isFirstMessage) {
+        analysisToReturn = analysis;
+      }
       
-      // Add analysis as context
-      const analysisContext = `
-🔍 **AUTOMATIC DATA SCAN COMPLETE:**
+      // Always add CSV data as context for Eurika
+      const csvDataContext = `
+📁 **DATASET AVAILABLE:**
 
-${analysis.summary}
+You have access to a CSV file with ${analysis.rowCount} rows and ${analysis.columnCount} columns.
 
-**Column Details:**
-${analysis.columnAnalysis.map(col => 
-  `- ${col.name}: ${col.type} (${col.uniqueCount} unique values${col.missingCount > 0 ? `, ${col.missingCount} missing` : ''})`
-).join('\n')}
+**Columns:** ${analysis.columnAnalysis.map(c => c.name).join(', ')}
 
-This analysis has been stored in my context. I'll use it to answer your questions with precision!
+**Full CSV Data:**
+\`\`\`csv
+${csvContent}
+\`\`\`
+
+IMPORTANT: You have the complete dataset above. Use it to calculate, analyze, and answer all user questions. Never ask the user to provide the data - you already have it!
 `;
       
       contextMessages = [
-        { role: 'assistant', content: analysisContext },
+        { role: 'system', content: csvDataContext },
         ...messages
       ];
     }

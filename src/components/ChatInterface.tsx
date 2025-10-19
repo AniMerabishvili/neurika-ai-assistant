@@ -322,11 +322,12 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         content: questionText,
       });
 
-      // Call Eurika with CSV content on first message
+      // Call Eurika with CSV content - always include it so Eurika can answer questions
       const { data, error } = await supabase.functions.invoke('chat-with-eurika', {
         body: {
           messages: conversationMessages,
-          csvContent: !csvAnalyzed && csvContent ? csvContent : undefined,
+          csvContent: csvContent || undefined,
+          isFirstMessage: !csvAnalyzed,
         },
       });
 
