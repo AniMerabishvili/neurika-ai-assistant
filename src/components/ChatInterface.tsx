@@ -319,10 +319,13 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         },
       });
 
+      console.log('Eurika response:', data);
+
       if (error) throw error;
 
       // If there's an analysis, display it first
       if (data.analysis && !csvAnalyzed) {
+        console.log('Displaying CSV analysis...');
         const analysisText = `🔍 **AUTOMATIC DATA SCAN COMPLETE:**\n\n${data.analysis.summary}\n\n**Column Details:**\n${data.analysis.columnAnalysis.map((col: any) => 
           `- ${col.name}: ${col.type} (${col.uniqueCount} unique values${col.missingCount > 0 ? `, ${col.missingCount} missing` : ''})`
         ).join('\n')}`;
@@ -347,6 +350,7 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
       }
 
       const aiResponse = data.choices?.[0]?.message?.content || data.generatedText || "I couldn't generate a response.";
+      console.log('AI Response:', aiResponse);
 
       const assistantMessage: Message = {
         id: (Date.now() + 2).toString(),
@@ -354,6 +358,7 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         content: aiResponse,
       };
 
+      console.log('Adding assistant message to state...');
       setMessages(prev => [...prev, assistantMessage]);
 
       // Save assistant message
@@ -363,6 +368,8 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         role: 'assistant',
         content: aiResponse,
       });
+
+      console.log('Message saved successfully');
 
     } catch (error: any) {
       toast({
