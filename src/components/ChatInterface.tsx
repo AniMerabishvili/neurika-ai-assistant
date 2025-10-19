@@ -348,29 +348,11 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
 
       const aiResponse = data.choices?.[0]?.message?.content || data.generatedText || "I couldn't generate a response.";
 
-      // Parse JSON response from Eurika
-      let assistantMessage: Message;
-      try {
-        const eurikaResponse = JSON.parse(aiResponse);
-        assistantMessage = {
-          id: (Date.now() + 2).toString(),
-          role: "assistant",
-          content: aiResponse,
-          observation: eurikaResponse.content?.Observation || undefined,
-          interpretation: eurikaResponse.content?.Interpretation || undefined,
-          actionable_conclusion: eurikaResponse.content?.["Actionable Conclusion"] || undefined,
-          relevantCard: eurikaResponse.open_card === "Observation" ? "observation" : 
-                       eurikaResponse.open_card === "Interpretation" ? "interpretation" : 
-                       eurikaResponse.open_card === "Actionable Conclusion" ? "actionable" : undefined,
-        };
-      } catch (e) {
-        // Fallback if response is not JSON
-        assistantMessage = {
-          id: (Date.now() + 2).toString(),
-          role: "assistant",
-          content: aiResponse,
-        };
-      }
+      const assistantMessage: Message = {
+        id: (Date.now() + 2).toString(),
+        role: "assistant",
+        content: aiResponse,
+      };
 
       setMessages(prev => [...prev, assistantMessage]);
 
@@ -380,9 +362,6 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
         user_id: user.id,
         role: 'assistant',
         content: aiResponse,
-        observation: assistantMessage.observation,
-        interpretation: assistantMessage.interpretation,
-        actionable_conclusion: assistantMessage.actionable_conclusion,
       });
 
     } catch (error: any) {
