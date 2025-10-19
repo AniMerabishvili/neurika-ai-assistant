@@ -115,10 +115,14 @@ serve(async (req) => {
 
     // Prepare messages with CSV analysis if provided
     let contextMessages = [...messages];
+    let analysisToReturn = null;
     
     if (csvContent) {
       console.log('CSV content detected, analyzing...');
       const analysis = analyzeCSV(csvContent);
+      
+      // Store analysis to return to client
+      analysisToReturn = analysis;
       
       // Add analysis as context
       const analysisContext = `
@@ -172,7 +176,13 @@ This analysis has been stored in my context. I'll use it to answer your question
     const data = await response.json();
     console.log('Successfully received response from Eurika');
 
-    return new Response(JSON.stringify(data), {
+    // Return both the analysis and AI response
+    const responseData = {
+      ...data,
+      analysis: analysisToReturn,
+    };
+
+    return new Response(JSON.stringify(responseData), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {

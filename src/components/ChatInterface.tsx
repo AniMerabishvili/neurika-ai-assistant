@@ -321,15 +321,35 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
 
       if (error) throw error;
 
-      // Mark CSV as analyzed after first response
-      if (!csvAnalyzed && csvContent) {
+      // If there's an analysis, display it first
+      if (data.analysis && !csvAnalyzed) {
+        const analysisText = `🔍 **AUTOMATIC DATA SCAN COMPLETE:**\n\n${data.analysis.summary}\n\n**Column Details:**\n${data.analysis.columnAnalysis.map((col: any) => 
+          `- ${col.name}: ${col.type} (${col.uniqueCount} unique values${col.missingCount > 0 ? `, ${col.missingCount} missing` : ''})`
+        ).join('\n')}`;
+        
+        const analysisMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: analysisText,
+        };
+        
+        setMessages(prev => [...prev, analysisMessage]);
+        
+        // Save analysis message
+        await supabase.from('chat_messages').insert({
+          session_id: sessionId,
+          user_id: user.id,
+          role: 'assistant',
+          content: analysisText,
+        });
+        
         setCsvAnalyzed(true);
       }
 
       const aiResponse = data.choices?.[0]?.message?.content || data.generatedText || "I couldn't generate a response.";
 
       const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: (Date.now() + 2).toString(),
         role: "assistant",
         content: aiResponse,
       };
