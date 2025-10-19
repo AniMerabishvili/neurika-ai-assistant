@@ -2,3 +2,6 @@ project_id = "dqwrhqkkinnmviursbna"
 
 [functions.analyze-data]
 verify_jwt = true
+
+[functions.chat-with-eurika]
+verify_jwt = true
