@@ -8,6 +8,7 @@ import { Send, Loader2, Eye, Brain, Target, FileSpreadsheet, ChevronDown } from 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import ReasoningCard from "@/components/ReasoningCard";
 import ChartDisplay from "@/components/ChartDisplay";
+import FormattedResponse from "@/components/FormattedResponse";
 
 const determineRelevantCard = (question: string): "observation" | "interpretation" | "actionable" => {
   const lowerQ = question.toLowerCase();
@@ -482,11 +483,7 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
                           </Button>
                         </CollapsibleTrigger>
                         <CollapsibleContent className="px-4 py-2">
-                          <div className="bg-muted/50 px-4 py-3 rounded-lg">
-                            <div className="prose prose-sm dark:prose-invert max-w-none">
-                              {message.content}
-                            </div>
-                          </div>
+                          <FormattedResponse content={message.content} />
                         </CollapsibleContent>
                       </Collapsible>
                     )}
@@ -496,8 +493,13 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
                       <ChartDisplay chartData={message.chartData} />
                     )}
                     
-                    {/* Show reasoning cards or regular content if no chart */}
-                    {!message.chartData && (
+                    {/* Show regular formatted response if no chart */}
+                    {!message.chartData && message.content && (
+                      <FormattedResponse content={message.content} />
+                    )}
+                    
+                    {/* Show reasoning cards or regular content if no chart and special message types */}
+                    {!message.chartData && !message.content && (
                       <>
                         {message.relevantCard === "observation" && (
                           <ReasoningCard
@@ -554,13 +556,6 @@ const ChatInterface = ({ fileId, fileName, sessionId: propSessionId, onSessionCr
                                 color="actionable"
                                 isOpen={true}
                               />
-                            )}
-                            {!message.observation && !message.interpretation && !message.actionable_conclusion && (
-                              <div className="bg-muted px-4 py-3 rounded-lg max-w-[90%]">
-                                <div className="prose prose-sm dark:prose-invert max-w-none">
-                                  {message.content}
-                                </div>
-                              </div>
                             )}
                           </>
                         )}
