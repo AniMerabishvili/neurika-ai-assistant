@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
-import { LogOut, Upload, MessageSquare, History, BarChart3 } from "lucide-react";
+import { LogOut, Upload, MessageSquare, History, BarChart3, Plug } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ThemeToggle from "@/components/ThemeToggle";
 import AddTeamMember from "@/components/AddTeamMember";
@@ -16,7 +16,7 @@ import { Card, CardContent } from "@/components/ui/card";
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"upload" | "chat" | "history" | "dataDashboard">("upload");
+  const [activeTab, setActiveTab] = useState<"upload" | "chat" | "history" | "dataDashboard" | "integrations">("upload");
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
@@ -243,6 +243,13 @@ const Dashboard = () => {
             >
               <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>Dashboard</span>
+            </button>
+            <button
+              onClick={() => navigate("/integrations")}
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 border-b-2 transition-colors whitespace-nowrap text-xs sm:text-sm border-transparent text-muted-foreground hover:text-foreground`}
+            >
+              <Plug className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Integrations</span>
             </button>
           </div>
         </div>
