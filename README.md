@@ -1,73 +1,47 @@
-# Welcome to your Lovable project
+What is Neurika AI Assistant?
 
-## Project info
+Working with databases is powerful, but it's often complex and requires learning a query language like SQL. Neurika AI Assistant changes that.
 
-**URL**: https://lovable.dev/projects/e2121e7b-e00b-4c7f-823a-b3904085f9d2
+Neurika is an intelligent tool that connects to your database and acts as your personal data analyst. It allows anyone, regardless of technical skill, to get insights from their data simply by asking questions in plain English.
 
-## How can I edit this code?
+    Instead of writing: SELECT COUNT(id) FROM users WHERE created_at >= '2025-11-01' AND team_id = 5;
 
-There are several ways of editing your application.
+    You can just ask: "How many new users joined team 5 this month?"
 
-**Use Lovable**
+This repository contains the complete full-stack application code.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e2121e7b-e00b-4c7f-823a-b3904085f9d2) and start prompting.
+    Live Demo: https://neureka-ai-assistant.lovable.app
 
-Changes made via Lovable will be committed automatically to this repo.
+Who is this for?
 
-**Use your preferred IDE**
+This tool is built for anyone who needs data to make decisions, without the technical bottleneck:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+    Business Analysts & Marketers: Get campaign performance, user demographics, and sales data instantly.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+    Product Managers: Track feature adoption, user funnels, and KPIs without writing a single line of code.
 
-Follow these steps:
+    Operations & Support Teams: Find customer orders, check inventory, or pull reports on the fly.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+    Founders & Executives: Get a high-level overview of your business metrics, anytime.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Key Features
 
-# Step 3: Install the necessary dependencies.
-npm i
+    Ask Questions in Plain English: Our core feature. The AI understands your request and writes the complex SQL query for you, so you don't have to.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+    Instant Data Visualization: Automatically generates charts and graphs from your query results, making the data easy to understand at a glance.
 
-**Edit a file directly in GitHub**
+    Explore Your Data: Safely browse your database tables and schemas in a simple, user-friendly interface.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+    AI-Powered Insights: Not sure what to ask? Neurika can analyze your schema and suggest interesting questions or point out potential performance bottlenecks.
 
-**Use GitHub Codespaces**
+    Secure Connection: Your database credentials are handled securely. (Add any details on security here, e.g., "We never store your data.")
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+How to Use (Quick Start for Users)
 
-## What technologies are used for this project?
+Get started in less than two minutes.
 
-This project is built with:
+    Go to the Live Demo: https://neureka-ai-assistant.lovable.app
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+    Connect Your Database: Securely provide your database connection details. (We support [List supported DBs, e.g., PostgreSQL, MySQL, etc.]).
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/e2121e7b-e00b-4c7f-823a-b3904085f9d2) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+    Ask Your First Question: That's it! Go to the chat bar and type what you want to know, like "Show me the top 10 customers by sales this year."
