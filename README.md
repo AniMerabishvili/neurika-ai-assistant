@@ -1,4 +1,4 @@
-##What is Neurika AI Assistant?
+## What is Neurika AI Assistant?
 
 Working with databases is powerful, but it's often complex and requires learning a query language like SQL. Neurika AI Assistant changes that.
 
@@ -12,7 +12,7 @@ This repository contains the complete full-stack application code.
 
     Live Demo: https://neureka-ai-assistant.lovable.app
 
-##Who is this for?
+## Who is this for?
 
 This tool is built for anyone who needs data to make decisions, without the technical bottleneck:
 
@@ -24,7 +24,7 @@ This tool is built for anyone who needs data to make decisions, without the tech
 
     Founders & Executives: Get a high-level overview of your business metrics, anytime.
 
-##Key Features
+## Key Features
 
     Ask Questions in Plain English: Our core feature. The AI understands your request and writes the complex SQL query for you, so you don't have to.
 
@@ -36,7 +36,7 @@ This tool is built for anyone who needs data to make decisions, without the tech
 
     Secure Connection: Your database credentials are handled securely. (Add any details on security here, e.g., "We never store your data.")
 
-##How to Use (Quick Start for Users)
+## How to Use (Quick Start for Users)
 
 Get started in less than two minutes.
 
